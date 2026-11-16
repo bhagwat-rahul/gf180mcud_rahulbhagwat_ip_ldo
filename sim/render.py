@@ -13,10 +13,11 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, default=ROOT / '.amp/in/artifacts')
+    parser.add_argument('--schematics', type=Path, default=ROOT / 'schematics')
     args = parser.parse_args()
     out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=True)
-    for sheet in sorted((ROOT / 'schematics').glob('*.sch')):
+    for sheet in sorted(args.schematics.resolve().glob('*.sch')):
         svg = out / (sheet.stem + '.svg')
         # Batch zoom_full excludes some off-canvas text in this Xschem build.
         # Include explicit bounds for components AND multiline annotations.

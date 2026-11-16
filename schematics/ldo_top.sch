@@ -35,18 +35,75 @@ N 1640 500 500 500 {lab=VFB}
 N 500 500 500 250 {lab=VFB}
 N 500 250 550 250 {lab=VFB}
 C {lab_pin.sym} 1640 500 0 1 {name=l4 lab=VFB}
-C {res.sym} 1010 340 3 0 {name=RZERO value=5k m=1}
-C {capa.sym} 1270 340 3 0 {name=CC value=200p m=1}
+N 850 130 900 130 {lab=STBY}
+C {lab_pin.sym} 900 130 0 1 {name=l36 lab=STBY}
+C {capa.sym} 1800 400 0 0 {name=CFF value=1p m=1}
+N 1800 220 1800 370 {lab=VOUT}
+N 1800 430 1800 500 {lab=VFB}
+N 1800 500 1640 500 {lab=VFB}
+C {res.sym} 1010 340 3 0 {name=RZERO value=400 m=1}
+C {res.sym} 1160 340 3 0 {name=RZB value=9.6k m=1}
+C {gf180mcu_fd_pr/pfet_03v3.sym} 1280 420 3 0 {name=MSWZ model=pfet_03v3 spiceprefix=X W=50u L=0.5u nf=1 m=16 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+C {capa.sym} 1450 340 3 0 {name=CC value=800p m=1}
 N 960 220 960 340 {lab=GATE}
 N 960 340 980 340 {lab=GATE}
-N 1040 340 1240 340 {lab=COMP}
-C {lab_wire.sym} 1140 340 0 0 {name=l5 lab=COMP}
-N 1300 340 1560 340 {lab=VOUT}
+N 1040 340 1130 340 {lab=COMP}
+C {lab_wire.sym} 1085 340 0 0 {name=l46 lab=COMP}
+N 1190 340 1420 340 {lab=COMP2}
+C {lab_wire.sym} 1305 340 0 0 {name=l47 lab=COMP2}
+N 1480 340 1560 340 {lab=VOUT}
+N 1100 340 1100 400 {lab=COMP}
+N 1100 400 1280 400 {lab=COMP}
+N 1370 340 1370 400 {lab=COMP2}
+N 1370 400 1310 400 {lab=COMP2}
+N 1280 440 1280 480 {lab=STBY}
+C {lab_pin.sym} 1280 480 0 1 {name=l48 lab=STBY}
 N 1560 340 1560 220 {lab=VOUT}
 N 1560 220 1640 220 {lab=VOUT}
 C {res.sym} 1800 600 0 0 {name=RBLEED value=360k m=1}
+C {capa.sym} 2000 400 0 0 {name=CGF value=20p m=1}
+N 2000 340 2000 370 {lab=GATE}
+N 2000 430 2000 460 {lab=VOUT}
+C {gf180mcu_fd_pr/pfet_03v3.sym} 2150 300 3 0 {name=MPPRE model=pfet_03v3 spiceprefix=X W=50u L=0.5u nf=1 m=30 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+N 2120 280 2090 280 {lab=VOUT}
+N 2120 280 2150 280 {lab=VOUT}
+N 2180 280 2210 280 {lab=PRE}
+N 2150 320 2150 340 {lab=PREG}
+C {res.sym} 2210 370 0 0 {name=RPRE value=120 m=1}
+N 2210 280 2210 340 {lab=PRE}
+N 2210 400 2210 430 {lab=VSS}
+C {gf180mcu_fd_pr/pfet_03v3.sym} 2400 300 0 0 {name=MPDIO model=pfet_03v3 spiceprefix=X W=10u L=1u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+N 2380 300 2380 330 {lab=PREG}
+N 2380 330 2420 330 {lab=PREG}
+N 2420 330 2450 330 {lab=PREG}
+N 2420 270 2450 270 {lab=STBY}
+N 2420 300 2450 300 {lab=VIN}
+C {res.sym} 2600 370 0 0 {name=RPRE_D value=1Meg m=1}
+N 2600 340 2600 320 {lab=PREG}
+N 2600 400 2600 420 {lab=VSS}
+C {capa.sym} 2700 370 0 0 {name=CPRE_D value=6p m=1}
+N 2700 340 2700 320 {lab=PREG}
+N 2700 400 2700 420 {lab=VSS}
+C {lab_wire.sym} 2450 270 0 0 {name=l50 lab=STBY}
+C {lab_wire.sym} 2450 300 0 0 {name=l51 lab=VIN}
+C {lab_wire.sym} 2450 330 0 0 {name=l52 lab=PREG}
+C {lab_wire.sym} 2600 320 0 0 {name=l53 lab=PREG}
+C {lab_wire.sym} 2600 420 0 0 {name=l54 lab=VSS}
+C {lab_wire.sym} 2700 320 0 0 {name=l55 lab=PREG}
+C {lab_wire.sym} 2700 420 0 0 {name=l56 lab=VSS}
+C {lab_wire.sym} 2000 340 0 0 {name=l40 lab=GATE}
+C {lab_wire.sym} 2000 460 0 0 {name=l41 lab=VOUT}
+C {lab_wire.sym} 2090 280 0 0 {name=l42 lab=VOUT}
+C {lab_wire.sym} 2210 280 0 0 {name=l43 lab=PRE}
+C {lab_wire.sym} 2150 340 0 0 {name=l44 lab=PREG}
+C {lab_wire.sym} 2210 430 0 0 {name=l45 lab=VSS}
 T {RUN: EN=1, STBY=0  |  STANDBY: EN=1, STBY=1  |  OFF: EN=0
-Feedback: 600 kohm / 1.2 Mohm. Preload: 360 kohm (~5 uA).
+Feedback: 600 kohm / 1.2 Mohm. RUN preload: MPPRE + 120 ohm, ~14 mA nominal and ~9 mA hot/slow, off in STANDBY.
+RBLEED 360 kohm (~5 uA) keeps VOUT defined when the pass device is off.
+Compensation zero: RZERO 400 ohm in RUN; STANDBY opens MSWZ so RZB 9.6 kohm
+sets a ~20 kHz zero (STANDBY crossover is ~20 kHz, RUN crossover ~10 MHz).
+Mode sequencing: preload gate PREG turns off fast through MPDIO but returns slowly
+through RPRE_D/CPRE_D (1 Mohm, 6 pF); the amp delays the boost bias similarly.
 Ideal R/C targets; internal programmable load and harness wrapper deferred.} 650 1040 0 0 0.3 0.3 {}
 N 50 160 10 160 {lab=VSS}
 C {lab_pin.sym} 10 160 0 0 {name=l6 lab=VSS}

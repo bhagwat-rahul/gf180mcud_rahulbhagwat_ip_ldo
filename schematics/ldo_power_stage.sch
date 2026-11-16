@@ -6,9 +6,10 @@ S {}
 F {}
 E {}
 T {Power stage - 3 logical MOS; repeated pass units dominate physical current routing} -480 -190 0 0 0.45 0.45 {}
-T {MPASS: W=50 um, L=0.28 um, m=200 -> 10,000 um total width.
+T {MPASS: W=50 um, L=0.28 um, m=800 -> 40,000 um total width.
 Multiplicity is not a finished finger/contact/metal layout. No reverse blocking or current limit.
-RDIS=2 kohm limits OFF discharge; it does not actively clamp RUN overshoot.} -330 270 0 0 0.3 0.3 {}
+OFF: MPOFF (40 um) pulls GATE to VIN, MNDIS (20 um) + RDIS (500 ohm) discharge VOUT.
+RDIS does not actively clamp RUN overshoot and is inactive whenever EN is high.} -330 270 0 0 0.3 0.3 {}
 N -110 -80 -110 -40 {lab=ENB}
 N -180 0 -140 0 {lab=VSS}
 N 240 0 240 60 {lab=VOUT}
@@ -29,8 +30,8 @@ C {iopin.sym} -180 150 0 1 {name=p2 lab=EN}
 C {iopin.sym} -110 -80 3 0 {name=p3 lab=ENB}
 C {iopin.sym} 0 180 1 0 {name=p4 lab=GATE}
 C {iopin.sym} 240 60 0 0 {name=p5 lab=VOUT}
-C {gf180mcu_fd_pr/pfet_03v3.sym} 110 140 3 0 {name=MPASS model=pfet_03v3 spiceprefix=X W=50u L=0.28u nf=1 m=200 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
-C {gf180mcu_fd_pr/pfet_03v3.sym} -100 150 0 0 {name=MPOFF model=pfet_03v3 spiceprefix=X W=4u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
-C {res.sym} 110 0 1 1 {name=RDIS value=2k m=1}
-C {gf180mcu_fd_pr/nfet_03v3.sym} -110 -20 1 0 {name=MNDIS model=nfet_03v3 spiceprefix=X W=4u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+C {gf180mcu_fd_pr/pfet_03v3.sym} 110 140 3 0 {name=MPASS model=pfet_03v3 spiceprefix=X W=50u L=0.28u nf=1 m=800 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+C {gf180mcu_fd_pr/pfet_03v3.sym} -100 150 0 0 {name=MPOFF model=pfet_03v3 spiceprefix=X W=40u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+C {res.sym} 110 0 1 1 {name=RDIS value=500 m=1}
+C {gf180mcu_fd_pr/nfet_03v3.sym} -110 -20 1 0 {name=MNDIS model=nfet_03v3 spiceprefix=X W=20u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
 C {lab_wire.sym} 0 0 1 0 {name=l4 lab=DIS}

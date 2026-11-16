@@ -61,7 +61,8 @@ def main():
         axes[0].semilogx(d[:, 0], 20*np.log10(np.hypot(d[:, 1], d[:, 2])), label=f'{row["load_A"]*1e3:g} mA')
         axes[1].semilogx(d[:, 0], np.unwrap(np.arctan2(d[:, 2], d[:, 1]))*180/np.pi)
     axes[0].axhline(0, color='gray', linewidth=.8)
-    axes[0].set(ylabel='Voltage return ratio (dB)', title='Typical / 27 °C / 3.3 V / 100 pF\nFeedback-input series injection — preliminary, not multiloop signoff')
+    method = 'Tian two-excitation' if selected and all(r.get('method') == 'Tian two-excitation' for r in selected) else 'Voltage-only approximation'
+    axes[0].set(ylabel='Outer-loop return ratio (dB)', title=f'Typical / 27 °C / 3.3 V / 100 pF\n{method} — not multiloop signoff')
     axes[0].legend()
     axes[1].axhline(-120, color='gray', linestyle='--', label='60° margin phase at unity crossing')
     axes[1].set(xlabel='Frequency (Hz)', ylabel='Phase (degrees)')

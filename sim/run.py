@@ -19,6 +19,8 @@ import subprocess
 
 import numpy as np
 
+from loopgain import margins, tian
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMATICS = ROOT / 'schematics'
@@ -31,13 +33,9 @@ def replace_once(text, old, new):
     return text.replace(old, new)
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--full', action='store_true')
-    parser.add_argument('--jobs', type=int, default=4)
-    parser.add_argument('--out', type=Path, default=ROOT / '.amp/in/sim')
-    args = parser.parse_args()
-    out = args.out.resolve()
+def netlist(out, schematics=SCHEMATICS):
+    """Netlist the editable hierarchy and record its source/model provenance."""
+    schematics = schematics.resolve()
     out.mkdir(parents=True, exist_ok=True)
     models = Path(os.environ['PDK_ROOT']) / 'gf180mcuD/libs.tech/ngspice'
     if not (models / 'sm141064.spice').exists():
@@ -45,22 +43,35 @@ def main():
     with (out / 'netlist.log').open('w') as log:
         subprocess.run(['xschem', '-n', '-q', '-x', '-b', '--rcfile', './xschemrc',
                         '-o', str(out), '-N', 'ldo_tb.spice', 'ldo_tb.sch'],
-                       cwd=SCHEMATICS, stdout=log, stderr=log, check=True)
+                       cwd=schematics, stdout=log, stderr=log, check=True)
     base = (out / 'ldo_tb.spice').read_text()
     base = re.sub(r'(?ims)^\.control\s*$.*?^\.endc\s*$', '', base)
     base = re.sub(r'(?im)^\.end\s*$', '', base)
     base = base.replace('/foss/pdks/gf180mcuD/libs.tech/ngspice', str(models))
-    manifest = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
-                for p in sorted(SCHEMATICS.iterdir()) if p.is_file()}
+    manifest = {str(p.relative_to(ROOT) if p.is_relative_to(ROOT) else p):
+                hashlib.sha256(p.read_bytes()).hexdigest()
+                for p in sorted(schematics.iterdir()) if p.is_file()}
     manifest['model_sha256'] = hashlib.sha256((models / 'sm141064.spice').read_bytes()).hexdigest()
     (out / 'sources.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    return base
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--full', action='store_true')
+    parser.add_argument('--jobs', type=int, default=4)
+    parser.add_argument('--out', type=Path, default=ROOT / '.amp/in/sim')
+    parser.add_argument('--schematics', type=Path, default=SCHEMATICS)
+    args = parser.parse_args()
+    out = args.out.resolve()
+    base = netlist(out, args.schematics)
 
     def run(name, net, commands):
         path = out / f'{name}.spice'
-        path.write_text(net + '\n.control\nset wr_singlescale\nset wr_vecnames\n'
-                        'set numdgt=12\n' + commands + '\n.endc\n.end\n')
+        path.write_text(net + '\n.control\nset num_threads=1\nset wr_singlescale\nset wr_vecnames\n'
+                        'set numdgt=17\n' + commands + '\n.endc\n.end\n')
         with (out / f'{name}.log').open('w') as log:
-            subprocess.run(['ngspice', '-b', str(path)], cwd=SCHEMATICS,
+            subprocess.run(['ngspice', '-b', str(path)], cwd=args.schematics.resolve(),
                            stdout=log, stderr=log, check=True)
         log = (out / f'{name}.log').read_text()
         # ngspice can exit successfully after errors in a .control command.
@@ -109,36 +120,46 @@ def main():
         corner, temp, vin, cap, current, standby = case
         name = f'ac_{corner}_{temp}_{vin}_{cap}_{current}_{int(standby)}'
         net = circuit(corner, temp, vin, current, cap, standby)
-        # Series voltage injection keeps the exact DC circuit closed. The
-        # voltage return ratio assumes the feedback input is high impedance;
-        # do not mistake it for extracted multiloop stability signoff.
+        # Tian's two-source probe keeps DC closed and accounts for loading
+        # in both directions. Adaptive bias/local compensation remain closed;
+        # this is an outer-loop measurement, not whole-circuit signoff.
         # An ideal full-load sink can make Newton converge to an unphysical
         # negative-output solution. A nodeset is a solver guess, not a clamp.
         # Startup tests below intentionally have no nodeset or forced IC.
         net += '\n.nodeset v(vout)=1.8\n'
         net = replace_once(net, 'VREF_SS VFB GATE ldo_error_amp',
                            'VREF_SS VFB_TEST GATE ldo_error_amp')
-        net = replace_once(net, 'XEA VIN', 'VTEST VFB_TEST VFB dc 0 ac 1\nXEA VIN')
-        run(name, net, f'op\nwrdata {out / (name + "_op.dat")} v(vout)\n'
-            f'ac dec 100 1 1e9\nlet loop=-v(xdut.vfb)/v(xdut.vfb_test)\n'
-            f'wrdata {out / (name + ".dat")} real(loop) imag(loop)')
-        op = float(data(name + '_op')[0, 1])
-        d = data(name)
-        gain = 20 * np.log10(np.hypot(d[:, 1], d[:, 2]))
-        phase = np.unwrap(np.arctan2(d[:, 2], d[:, 1])) * 180 / np.pi
-        down = np.where((gain[:-1] > 0) & (gain[1:] <= 0))[0]
-        crossings = []
-        for i in down:
-            fraction = gain[i] / (gain[i] - gain[i + 1])
-            crossings.append((float(10 ** (np.log10(d[i, 0]) + fraction *
-                               np.log10(d[i + 1, 0] / d[i, 0]))),
-                              float(180 + phase[i] + fraction * (phase[i + 1] - phase[i]))))
-        pm = min((x[1] for x in crossings), default=None)
-        valid = bool(LOW <= op <= HIGH and gain[0] > 40 and pm is not None)
+        for excitation in ['voltage', 'current']:
+            probe = f'VTEST VFB_TEST VFB dc 0 ac {int(excitation == "voltage")}\n'
+            probe += f'ITEST VSS VFB_TEST dc 0 ac {int(excitation == "current")}\n'
+            measured = replace_once(net, 'XEA VIN', probe + 'XEA VIN')
+            sample = f'{name}_{excitation}'
+            run(sample, measured, f'op\nwrdata {out / (sample + "_op.dat")} '
+                'v(vout) v(xdut.gate) v(xdut.pb) v(xdut.xea.ea)\n'
+                f'ac dec 200 1 1e9\nwrdata {out / (sample + ".dat")} '
+                'real(v(xdut.vfb_test)) imag(v(xdut.vfb_test)) '
+                'real(i(v.xdut.vtest)) imag(i(v.xdut.vtest)) '
+                'real(v(xdut.vfb)) imag(v(xdut.vfb))')
+        voltage, current_data = data(name + '_voltage'), data(name + '_current')
+        np.testing.assert_array_equal(voltage[:, 0], current_data[:, 0])
+        np.testing.assert_allclose(data(name + '_voltage_op'), data(name + '_current_op'),
+                                   rtol=1e-6, atol=1e-8)
+        op = float(data(name + '_voltage_op')[0, 1])
+        vv, iv = voltage[:, 1] + 1j * voltage[:, 2], voltage[:, 3] + 1j * voltage[:, 4]
+        vi, ii = current_data[:, 1] + 1j * current_data[:, 2], current_data[:, 3] + 1j * current_data[:, 4]
+        loop = tian(vv, iv, vi, ii)
+        measured = margins(voltage[:, 0], loop)
+        legacy = -(voltage[:, 5] + 1j * voltage[:, 6]) / vv
+        # Preserve the existing plotting interface; raw probe responses are
+        # also retained so orientation/sign and the old approximation can be audited.
+        np.savetxt(out / (name + '.dat'), np.column_stack((voltage[:, 0], loop.real, loop.imag)),
+                   header='frequency_Hz loop_real loop_imag')
+        measured['valid'] = bool(LOW <= op <= HIGH and measured['valid'])
+        measured['pm_ok'] = bool(measured['valid'] and measured['pm_ok'])
         return dict(name=name, corner=corner, temp_C=temp, vin_V=vin, cap_F=cap,
                     load_A=current, standby=standby, op_vout_V=op,
-                    dc_loop_gain_dB=float(gain[0]), crossings_Hz_deg=crossings,
-                    min_pm_deg=pm, valid=valid, pm_ok=bool(valid and pm >= 60))
+                    method='Tian two-excitation', **measured,
+                    voltage_only_crossings_Hz_deg=margins(voltage[:, 0], legacy)['crossings_Hz_deg'])
 
     with ThreadPoolExecutor(max_workers=args.jobs) as pool:
         dc = list(pool.map(dc_case, [(*pvt, mode) for pvt in pvts for mode in [False, True]]))
@@ -242,7 +263,8 @@ def main():
     print(json.dumps({k: results[k] for k in ['failures', 'transient', 'pgood']}, indent=2))
     print('DC range:', min(r['vout_min_V'] for r in dc), max(r['vout_max_V'] for r in dc))
     print('Max STANDBY Iq (VIN + imported bias/reference):', max(r['iq_total_max_A'] for r in dc if r['standby']))
-    print('Worst valid voltage-return-ratio margin:', min((r for r in ac if r['valid']), key=lambda r: r['min_pm_deg']))
+    print('Worst valid Tian outer-loop margin:', min((r for r in ac if r['valid']),
+                                                   key=lambda r: r['min_pm_deg'], default=None))
     print('Outputs:', out)
     raise SystemExit(1 if any(results['failures'].values()) else 0)
 
