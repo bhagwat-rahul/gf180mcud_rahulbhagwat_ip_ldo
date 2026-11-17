@@ -42,9 +42,9 @@ N 1800 220 1800 370 {lab=VOUT}
 N 1800 430 1800 500 {lab=VFB}
 N 1800 500 1640 500 {lab=VFB}
 C {res.sym} 1010 340 3 0 {name=RZERO value=400 m=1}
-C {res.sym} 1160 340 3 0 {name=RZB value=9.6k m=1}
+C {res.sym} 1160 340 3 0 {name=RZB value=15k m=1}
 C {gf180mcu_fd_pr/pfet_03v3.sym} 1280 420 3 0 {name=MSWZ model=pfet_03v3 spiceprefix=X W=50u L=0.5u nf=1 m=16 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
-C {capa.sym} 1450 340 3 0 {name=CC value=800p m=1}
+C {capa.sym} 1450 340 3 0 {name=CC value=400p m=1}
 N 960 220 960 340 {lab=GATE}
 N 960 340 980 340 {lab=GATE}
 N 1040 340 1130 340 {lab=COMP}

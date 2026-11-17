@@ -30,7 +30,7 @@ C {iopin.sym} -180 150 0 1 {name=p2 lab=EN}
 C {iopin.sym} -110 -80 3 0 {name=p3 lab=ENB}
 C {iopin.sym} 0 180 1 0 {name=p4 lab=GATE}
 C {iopin.sym} 240 60 0 0 {name=p5 lab=VOUT}
-C {gf180mcu_fd_pr/pfet_03v3.sym} 110 140 3 0 {name=MPASS model=pfet_03v3 spiceprefix=X W=50u L=0.28u nf=1 m=800 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+C {gf180mcu_fd_pr/pfet_03v3.sym} 110 140 3 0 {name=MPASS model=pfet_03v3 spiceprefix=X W=50u L=0.28u nf=1 m=400 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
 C {gf180mcu_fd_pr/pfet_03v3.sym} -100 150 0 0 {name=MPOFF model=pfet_03v3 spiceprefix=X W=40u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
 C {res.sym} 110 0 1 1 {name=RDIS value=500 m=1}
 C {gf180mcu_fd_pr/nfet_03v3.sym} -110 -20 1 0 {name=MNDIS model=nfet_03v3 spiceprefix=X W=20u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
