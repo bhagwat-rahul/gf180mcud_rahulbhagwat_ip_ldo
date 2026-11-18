@@ -67,7 +67,7 @@ N 2120 280 2090 280 {lab=VOUT}
 N 2120 280 2150 280 {lab=VOUT}
 N 2180 280 2210 280 {lab=PRE}
 N 2150 320 2150 340 {lab=PREG}
-C {gf180mcu_fd_pr/ppolyf_u.sym} 2210 370 0 0 {name=RPRE W=50u L=68.229u model=ppolyf_u spiceprefix=X m=4}
+C {gf180mcu_fd_pr/ppolyf_u.sym} 2210 370 0 0 {name=RPRE W=200u L=68.229u model=ppolyf_u spiceprefix=X m=1}
 C {lab_pin.sym} 2190 370 0 0 {name=lrb5 lab=VSS}
 N 2210 280 2210 340 {lab=PRE}
 N 2210 400 2210 430 {lab=VSS}
