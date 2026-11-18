@@ -51,8 +51,9 @@ N 220 430 265 430 {lab=VIN}
 C {lab_pin.sym} 265 430 0 1 {name=l11 lab=VIN}
 N 180 430 135 430 {lab=MODEG}
 C {lab_pin.sym} 135 430 0 0 {name=l12 lab=MODEG}
-C {res.sym} 300 620 3 0 {name=RMODE_D value=1Meg m=1}
-C {capa.sym} 400 620 0 0 {name=CMODE_D value=5p m=1}
+C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 300 620 3 0 {name=RMODE_D W=2u L=666.645u model=ppolyf_u_3k spiceprefix=X m=1}
+C {lab_pin.sym} 300 640 0 0 {name=lrb7 lab=VSS}
+C {gf180mcu_fd_pr/cap_mim_analog.sym} 400 620 0 0 {name=CMODE_D W=20u L=12.2u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=10}
 N 180 430 180 590 {lab=MODEG}
 N 180 590 400 590 {lab=MODEG}
 N 330 590 330 620 {lab=MODEG}
@@ -79,8 +80,10 @@ N 420 290 420 330 {lab=A}
 N 420 330 420 450 {lab=A}
 N 820 290 820 330 {lab=EA}
 N 820 330 820 450 {lab=EA}
-C {res.sym} 520 330 3 0 {name=RA value=80k m=1}
-C {res.sym} 720 330 3 0 {name=RB value=80k m=1}
+C {gf180mcu_fd_pr/ppolyf_u.sym} 520 330 3 0 {name=RA W=1u L=222.66u model=ppolyf_u spiceprefix=X m=1}
+C {lab_pin.sym} 520 350 0 0 {name=lrb8 lab=VSS}
+C {gf180mcu_fd_pr/ppolyf_u.sym} 720 330 3 0 {name=RB W=1u L=222.66u model=ppolyf_u spiceprefix=X m=1}
+C {lab_pin.sym} 720 350 0 0 {name=lrb9 lab=VSS}
 N 420 330 490 330 {lab=A}
 N 550 330 620 330 {lab=CMAVG}
 N 620 330 690 330 {lab=CMAVG}
@@ -154,10 +157,11 @@ C {lab_wire.sym} 820 400 0 0 {name=l31 lab=EA}
 C {lab_wire.sym} 1140 400 0 0 {name=l32 lab=Q}
 C {lab_wire.sym} 620 560 0 0 {name=l33 lab=TAIL}
 C {lab_wire.sym} 220 350 0 0 {name=l34 lab=RUN_BIAS}
-C {res.sym} 1000 620 3 0 {name=RZA value=1000 m=1}
+C {gf180mcu_fd_pr/ppolyf_u.sym} 1000 620 3 0 {name=RZA W=10u L=28.229u model=ppolyf_u spiceprefix=X m=1}
+C {lab_pin.sym} 1000 640 0 0 {name=lrb10 lab=VSS}
 N 970 620 940 620 {lab=EA}
 N 1030 620 1030 650 {lab=MC}
-C {capa.sym} 1030 680 0 0 {name=CM value=10p m=1}
+C {gf180mcu_fd_pr/cap_mim_analog.sym} 1030 680 0 0 {name=CM W=20u L=12.2u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=20}
 N 1030 710 1030 740 {lab=GATE}
 C {lab_wire.sym} 940 620 0 0 {name=l40 lab=EA}
 C {lab_wire.sym} 1030 620 0 0 {name=l41 lab=MC}

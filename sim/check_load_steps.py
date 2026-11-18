@@ -17,7 +17,7 @@ import re
 import numpy as np
 
 from check_loopgain import read, simulate
-from run import HIGH, LOW, ROOT, SCHEMATICS, netlist, replace_once
+from run import HIGH, LOW, ROOT, SCHEMATICS, corner_net, netlist, replace_once
 
 EDGE = 100e-9
 START = 5e-6
@@ -29,7 +29,7 @@ TRANSIENT_LOW, TRANSIENT_HIGH = 1.62, 1.98
 def check(base, out, corner, temp, vin, cap_pf, direction, step_ns):
     name = f'step_{corner}_{temp}_{vin}_{cap_pf}_{direction}'
     initial, final = (0, .1) if direction == 'up' else (.1, 0)
-    net = replace_once(base, 'sm141064.spice typical', f'sm141064.spice {corner}')
+    net = corner_net(base, corner)
     net = replace_once(net, 'VSUP VIN 0 3.3', f'VSUP VIN 0 {vin}')
     net = replace_once(net, 'VEN EN 0 3.3', f'VEN EN 0 {vin}')
     net = replace_once(net, 'CLOAD VOUT 0 100p', f'CLOAD VOUT 0 {cap_pf * 1e-12}')

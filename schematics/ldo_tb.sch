@@ -14,6 +14,8 @@ C {isource.sym} 650 400 0 0 {name=IBIAS value=1u m=1}
 C {isource.sym} 950 400 0 0 {name=ILOAD value=1m m=1}
 C {capa.sym} 1250 400 0 0 {name=CLOAD value=100p m=1}
 C {code_shown.sym} 0 650 0 0 {name=MODELS only_toplevel=true value=".lib /foss/pdks/gf180mcuD/libs.tech/ngspice/sm141064.spice typical
+.lib /foss/pdks/gf180mcuD/libs.tech/ngspice/sm141064.spice res_typical
+.lib /foss/pdks/gf180mcuD/libs.tech/ngspice/sm141064.spice mimcap_typical
 .include /foss/pdks/gf180mcuD/libs.tech/ngspice/design.ngspice
 .param sw_stat_global=0
 .param sw_stat_mismatch=0

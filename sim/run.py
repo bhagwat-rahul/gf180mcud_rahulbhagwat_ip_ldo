@@ -52,8 +52,27 @@ def netlist(out, schematics=SCHEMATICS):
                 hashlib.sha256(p.read_bytes()).hexdigest()
                 for p in sorted(schematics.iterdir()) if p.is_file()}
     manifest['model_sha256'] = hashlib.sha256((models / 'sm141064.spice').read_bytes()).hexdigest()
+    manifest['mim_model_sha256'] = hashlib.sha256(
+        (models / 'sm141064_mim.spice').read_bytes()).hexdigest()
+    manifest['design_sha256'] = hashlib.sha256(
+        (models / 'design.ngspice').read_bytes()).hexdigest()
     (out / 'sources.json').write_text(json.dumps(manifest, indent=2) + '\n')
     return base
+
+
+def corner_net(base, corner):
+    """Apply one MOS corner and the matching available passive corner.
+
+    The PDK passive decks define only typical/ff/ss. Mixed MOS corners
+    (fs/sf) leave the passives at typical instead of inventing a skew.
+    """
+    net = replace_once(base, 'sm141064.spice typical', f'sm141064.spice {corner}')
+    passive = corner if corner in ('typical', 'ff', 'ss') else 'typical'
+    net = replace_once(net, 'sm141064.spice res_typical',
+                       f'sm141064.spice res_{passive}')
+    net = replace_once(net, 'sm141064.spice mimcap_typical',
+                       f'sm141064.spice mimcap_{passive}')
+    return net
 
 
 def main():
@@ -85,7 +104,7 @@ def main():
         return values
 
     def circuit(corner='typical', temp=27, vin=3.3, current=.001, cap=100e-12, standby=False):
-        net = replace_once(base, 'sm141064.spice typical', f'sm141064.spice {corner}')
+        net = corner_net(base, corner)
         net = replace_once(net, 'VSUP VIN 0 3.3', f'VSUP VIN 0 {vin}')
         net = replace_once(net, 'VEN EN 0 3.3', f'VEN EN 0 {vin}')
         net = replace_once(net, 'VSTBY STBY 0 0', f'VSTBY STBY 0 {vin if standby else 0}')

@@ -106,12 +106,15 @@ N 1070 570 1075 570 {lab=VIN}
 N 1075 570 1075 620 {lab=VIN}
 N 1075 620 1120 620 {lab=VIN}
 C {lab_pin.sym} 1120 620 0 1 {name=l18 lab=VIN}
-C {res.sym} 0 800 0 0 {name=RTH value=200k m=1}
-C {res.sym} 0 1000 0 0 {name=RLOW value=1.8Meg m=1}
+C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 0 800 0 0 {name=RTH W=2u L=133.311u model=ppolyf_u_3k spiceprefix=X m=1}
+C {lab_pin.sym} -20 800 0 0 {name=lrb11 lab=VSS}
+C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 0 1000 0 0 {name=RLOW W=2u L=1199.978u model=ppolyf_u_3k spiceprefix=X m=1}
+C {lab_pin.sym} -20 1000 0 0 {name=lrb12 lab=VSS}
 N 0 830 0 900 {lab=THRESH}
 N 0 900 0 970 {lab=THRESH}
 C {lab_pin.sym} 0 900 0 0 {name=l19 lab=THRESH}
-C {res.sym} 500 800 0 0 {name=RHYS value=3.06Meg m=1}
+C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 500 800 0 0 {name=RHYS W=2u L=2039.978u model=ppolyf_u_3k spiceprefix=X m=1}
+C {lab_pin.sym} 480 800 0 0 {name=lrb13 lab=VSS}
 C {gf180mcu_fd_pr/nfet_03v3.sym} 480 1000 0 0 {name=MNHYS model=nfet_03v3 spiceprefix=X W=2u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
 N 500 1000 505 1000 {lab=VSS}
 N 505 1000 505 1050 {lab=VSS}
