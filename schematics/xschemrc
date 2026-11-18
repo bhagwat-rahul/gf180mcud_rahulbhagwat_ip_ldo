@@ -2,5 +2,6 @@ set PDK_ROOT $env(PDK_ROOT)
 source $PDK_ROOT/gf180mcuD/libs.tech/xschem/xschemrc
 append XSCHEM_LIBRARY_PATH :$PDK_ROOT/gf180mcuD/libs.tech/xschem
 append XSCHEM_LIBRARY_PATH :[file dirname [info script]]
+append XSCHEM_LIBRARY_PATH :[file dirname [info script]]/load
 set netlist_type spice
 set spiceprefix 1

@@ -6,6 +6,11 @@ S {}
 E {}
 T {LDO simulation fixture - real GF180 MOS, ideal supplies and independent load} 0 -170 0 0 0.45 0.45 {}
 C {ldo_top.sym} 250 50 0 0 {name=XDUT}
+C {vsource.sym} 2900 100 0 0 {name=VLDENB value=3.3 m=1}
+N 2900 70 2900 30 {lab=LDENB}
+C {lab_pin.sym} 2900 30 0 0 {name=l32 lab=LDENB}
+N 2900 130 2900 170 {lab=0}
+C {lab_pin.sym} 2900 170 0 0 {name=l33 lab=0}
 C {vsource.sym} 650 100 0 0 {name=VSUP value=3.3 m=1}
 C {vsource.sym} 950 100 0 0 {name=VREF value=1.2 m=1}
 C {vsource.sym} 1250 100 0 0 {name=VEN value=3.3 m=1}
@@ -39,6 +44,8 @@ N 100 170 60 170 {lab=EN}
 C {lab_pin.sym} 60 170 0 0 {name=l5 lab=EN}
 N 100 200 60 200 {lab=STBY}
 C {lab_pin.sym} 60 200 0 0 {name=l6 lab=STBY}
+N 100 230 60 230 {lab=LDENB}
+C {lab_pin.sym} 60 230 0 0 {name=l34 lab=LDENB}
 N 400 170 440 170 {lab=VOUT}
 C {lab_pin.sym} 440 170 0 1 {name=l7 lab=VOUT}
 N 400 200 440 200 {lab=PGOOD}

@@ -12,7 +12,8 @@
 
 The editable hierarchy starts at [schematics/ldo_top.sch](schematics/ldo_top.sch).
 It contains a two-stage error amplifier, PMOS pass stage with a mode-switched
-compensation zero, soft-start, power-good and a sequenced startup block. The
+compensation zero, soft-start, power-good, a sequenced startup block and the
+on-die 0–100 mA characterization load. The
 pass device represents 400 parallel 50 µm-wide units (20 mm total), not a
 completed physical layout. No Verilog is needed for this regulator-only
 prototype; the internal load and harness wrapper are deferred.
@@ -69,6 +70,21 @@ Worst measured startup at `ss`, −40 °C, 3.6 V, 10 pF: `VOUT` minimum
 startup into 0/1 mA/100 mA: minimum **−1.5/−0.6/−0.01 mV**, maximum
 **1.80058/1.80057/1.80049 V**. The full PVT matrix is being re-run from these
 sheets.
+
+## On-die load — November 18
+
+The load is in `schematics/load/ldo_load.sch` and is instantiated inside
+`ldo_top.sch`; `VLOAD` is tied to `VREF`, and the new `LDENB` pin is an
+active-high disable (0 = load on, VIN = off). The load is six logical MOS
+(222 unit fingers, dominated by the 210:1 output mirror) and includes a 100 pF
+mirror-gate capacitor to slow the current edge.
+
+At `VREF=1.2 V` it sinks **97.2 mA** at `VOUT=1.8 V`; `LDENB=3.3 V` disables it
+to pA. With the LDO already in regulation, the 0↔97 mA step gives
+**1.713–1.858 V** at typical/100 pF, inside the provisional 1.62–1.98 V
+transient gate. Enabling the load from t=0 during startup peaks at ~1.88 V, so
+the intended sequence is to enable it after PGOOD. The external 1.2 V reference
+must supply the load's ~0.46 mA reference current.
 
 ## What's an LDO?
 

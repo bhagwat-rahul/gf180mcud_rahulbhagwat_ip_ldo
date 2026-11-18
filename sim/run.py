@@ -255,7 +255,7 @@ def main():
                           settled_ok=bool(np.all((d[:, 1] >= LOW) & (d[:, 1] <= HIGH)))))
 
     # Comparator characterized separately with rising AND falling input.
-    net = replace_once(circuit(), 'XDUT VIN 0 VREF IBIAS EN STBY VOUT PGOOD ldo_top',
+    net = replace_once(circuit(), 'XDUT VIN 0 VREF IBIAS EN STBY LDENB VOUT PGOOD ldo_top',
                        'XBIAS VIN 0 IBIAS EN STBY GATE ENB PB ldo_bias\nVGATE GATE 0 3.3\n'
                        'XPG VIN 0 PB EN ENB VREF VFB PGOOD ldo_pgood\n'
                        'VFB VFB 0 PWL(0 .9 100u .9 1.1m 1.2 1.2m 1.2 2.2m .9)')

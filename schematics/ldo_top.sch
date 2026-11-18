@@ -180,3 +180,15 @@ N 2750 590 2800 590 {lab=PGOOD}
 C {lab_pin.sym} 2800 590 0 1 {name=lxpgood lab=PGOOD}
 N 2750 620 2800 620 {lab=ENB}
 C {lab_pin.sym} 2800 620 0 1 {name=lxenb lab=ENB}
+C {iopin.sym} 1120 -90 0 0 {name=p8 lab=LDENB}
+C {ldo_load.sym} 3200 500 0 0 {name=XLOAD}
+N 3050 500 3000 500 {lab=VIN}
+C {lab_pin.sym} 3000 500 0 0 {name=lxlvin lab=VIN}
+N 3050 530 3000 530 {lab=VSS}
+C {lab_pin.sym} 3000 530 0 0 {name=lxlvss lab=VSS}
+N 3050 560 3000 560 {lab=VREF}
+C {lab_pin.sym} 3000 560 0 0 {name=lxlvref lab=VREF}
+N 3050 590 3000 590 {lab=LDENB}
+C {lab_pin.sym} 3000 590 0 0 {name=lxldenb lab=LDENB}
+N 3350 560 3400 560 {lab=VOUT}
+C {lab_pin.sym} 3400 560 0 0 {name=lxlvout lab=VOUT}
