@@ -1,0 +1,97 @@
+magic
+tech gf180mcuD
+timestamp 1795026230
+<< checkpaint >>
+rect -245 -1232 245 1232
+<< nwell >>
+rect -45 -1032 45 1032
+<< pmos >>
+rect -20 11 20 1011
+rect -20 -1011 20 -11
+<< pdiff >>
+rect -28 1010 -20 1011
+rect -28 12 -27 1010
+rect -22 12 -20 1010
+rect -28 11 -20 12
+rect 20 1010 28 1011
+rect 20 12 22 1010
+rect 27 12 28 1010
+rect 20 11 28 12
+rect -28 -12 -20 -11
+rect -28 -1010 -27 -12
+rect -22 -1010 -20 -12
+rect -28 -1011 -20 -1010
+rect 20 -12 28 -11
+rect 20 -1010 22 -12
+rect 27 -1010 28 -12
+rect 20 -1011 28 -1010
+<< pdiffc >>
+rect -27 12 -22 1010
+rect 22 12 27 1010
+rect -27 -1010 -22 -12
+rect 22 -1010 27 -12
+<< nsubdiff >>
+rect -42 1023 42 1030
+rect -42 1018 -35 1023
+rect -42 -1018 -41 1018
+rect -36 -1018 -35 1018
+rect 35 1018 42 1023
+rect -42 -1023 -35 -1018
+rect 35 -1018 36 1018
+rect 41 -1018 42 1018
+rect 35 -1023 42 -1018
+rect -42 -1030 42 -1023
+<< nsubdiffcont >>
+rect -41 -1018 -36 1018
+rect 36 -1018 41 1018
+<< polysilicon >>
+rect -20 1019 20 1020
+rect -20 1014 -18 1019
+rect 18 1014 20 1019
+rect -20 1011 20 1014
+rect -20 8 20 11
+rect -20 3 -18 8
+rect 18 3 20 8
+rect -20 2 20 3
+rect -20 -3 20 -2
+rect -20 -8 -18 -3
+rect 18 -8 20 -3
+rect -20 -11 20 -8
+rect -20 -1014 20 -1011
+rect -20 -1019 -18 -1014
+rect 18 -1019 20 -1014
+rect -20 -1020 20 -1019
+<< polycontact >>
+rect -18 1014 18 1019
+rect -18 3 18 8
+rect -18 -8 18 -3
+rect -18 -1019 18 -1014
+<< metal1 >>
+rect -41 1024 41 1028
+rect -41 1018 -36 1024
+rect -19 1014 -18 1019
+rect 18 1014 19 1019
+rect 36 1018 41 1024
+rect -27 1010 -22 1011
+rect -27 11 -22 12
+rect 22 1010 27 1011
+rect 22 11 27 12
+rect -19 3 -18 8
+rect 18 3 19 8
+rect -19 -8 -18 -3
+rect 18 -8 19 -3
+rect -27 -12 -22 -11
+rect -27 -1011 -22 -1010
+rect 22 -12 27 -11
+rect 22 -1011 27 -1010
+rect -41 -1024 -36 -1018
+rect -19 -1019 -18 -1014
+rect 18 -1019 19 -1014
+rect 36 -1024 41 -1018
+rect -41 -1028 41 -1024
+<< properties >>
+string FIXED_BBOX -39 -1026 39 1026
+string gencell pfet_03v3
+string library gf180mcu
+string parameters w 50.0 l 2.0 m 2 nf 1 diffcov 100 polycov 100 guard 1 glc 1 grc 1 gtc 0 gbc 0 tbcov 100 rlcov 100 topc 1 botc 1 poverlap 0 doverlap 1 lmin 0.28 wmin 0.22 class mosfet full_metal 1 compatible {pfet_03v3 pfet_05v0 pfet_06v0} ad int((nf+1)/2)*W/nf*0.18u as int((nf+2)/2)*W/nf*0.18u pd 2*int((nf+1)/2)*(W/nf+0.18u) ps 2*int((nf+2)/2)*(W/nf+0.18u) nrd 0.18u/W nrs 0.18u/W sa 0 sb 0 sd 0
+<< end >>

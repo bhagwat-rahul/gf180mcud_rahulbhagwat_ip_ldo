@@ -1,0 +1,30 @@
+magic
+tech gf180mcuD
+timestamp 1795026229
+<< checkpaint >>
+rect -200 -10770 648 354
+rect -200 -11246 702 -10770
+rect 242 -11252 702 -11246
+<< metal1 >>
+rect 0 0 20 20
+rect 0 -40 20 -20
+rect 0 -80 20 -60
+rect 0 -120 20 -100
+use cap_mim_2p0fF_UFNFZK  XCSS
+timestamp 1795026231
+transform 1 0 224 0 1 -5446
+box -224 -5600 224 5600
+use nfet_03v3_K8XTZ5  XMNRESET
+timestamp 1795026232
+transform 1 0 472 0 1 -11011
+box -30 -41 30 41
+<< labels >>
+flabel metal1 0 0 20 20 0 FreeSans 160 0 0 0 VSS
+port 0 nsew
+flabel metal1 0 -40 20 -20 0 FreeSans 160 0 0 0 ENB
+port 1 nsew
+flabel metal1 0 -80 20 -60 0 FreeSans 160 0 0 0 VREF
+port 2 nsew
+flabel metal1 0 -120 20 -100 0 FreeSans 160 0 0 0 VREF_SS
+port 3 nsew
+<< end >>

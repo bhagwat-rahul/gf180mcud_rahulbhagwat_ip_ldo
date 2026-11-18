@@ -76,7 +76,7 @@ There is no control decoder, SPI, sequencer, oscillator or Verilog in this slice
 | `STBY` | VIN-domain high disables replica adaptation; EN remains high to regulate |
 | `VOUT` | Nominal 1.8 V regulated output; full current stays on die, pad is sense/light-load only |
 | `PGOOD` | VIN-domain status, not a package-pad driver; final-reference threshold, low in OFF |
-| `LDENB` | VIN-domain active-high disable request for the on-die load; the internal sequencer enables the load only when `LDENB=0`, `PGOOD=1`, and `STBY=0`. `LDENB=1` forces it off; a 20 MΩ pull-down makes an unconnected pin request the load, which still waits for PGOOD. |
+| `LDENB` | VIN-domain active-high disable request for the on-die load; a NAND3 of `LDENB`, `STBY` and `PGOOD` gates the internal enable, so the load turns on only in RUN after PGOOD. `LDENB=1` forces it off; there is no static sequencer current (full CMOS gate). |
 
 EN=1/STBY=0 is RUN; EN=1/STBY=1 is STANDBY; EN=0 is OFF. STANDBY does not
 limit the external load to 1 mA: the future load controller must enforce that.
@@ -266,14 +266,21 @@ The rejected candidate was not advanced to full-PVT, mismatch or layout tests.
 
 ## Final PDK-passive design — November 18
 
-The final design uses GF180MCU-D poly resistors and MIM capacitors throughout.
-The startup block is `schematics/ldo_startup.sch`; the latest full matrix is
-`.amp/in/single-loop/pdk-fix3/`, generated from the current sheets.
+The final design uses GF180MCU-D poly resistors and MIM capacitors throughout
+(`cap_mim_2f0_m4m5_noshield`, electrically identical to the earlier m3m4
+variant — only the metal pair changed so Magic's gencell/extraction/LVS all
+agree). The startup block is `schematics/ldo_startup.sch`, the on-die load is
+`schematics/load/ldo_load.sch` with a PGOOD/STBY-sequenced enable, and the
+latest full matrix is `.amp/in/single-loop/pdk-fix8/` (electrically
+bit-identical to `pdk-fix7`; the only change is the cap metal pair), generated
+from the current sheets. A hierarchical Magic
+baseline lives in `layout/` (see `layout/README.md` and
+`scripts/import_layout.sh`).
 
 | Item | Value |
 | --- | --- |
 | `MPASS` | 50 µm × 0.28 µm, m=400 (20 mm total) |
-| Feedback `RTOP`/`RBOT` | 80 kΩ / 160 kΩ |
+| Feedback `RTOP`/`RBOT` | 600 kΩ / 1.2 MΩ (3k poly) |
 | `RZERO` / `RZB` | 400 Ω / 18 kΩ |
 | `CC` / `CGF` | 400 pF / 19.5 pF |
 | Preload `MPPRE` | 50 µm × 0.5 µm, m=30, 120 Ω |
@@ -288,14 +295,14 @@ from the `CC` ramp turns the bleed off only after compensation is restored.
 ### Results from the editable sheets
 
 ```sh
-python3 sim/run.py --full --jobs 4 --out .amp/in/single-loop/pdk-fix3
+python3 sim/run.py --full --jobs 4 --out .amp/in/single-loop/pdk-fix8
 ```
 
 - **AC, 1080 cases**: every case has one unity crossing and is valid. Worst
-  phase margin **62.08°** (`ss`, −40 °C, 3.6 V, 1 nF, STANDBY 0 A); worst RUN
+  phase margin **62.00°** (`ss`, −40 °C, 3.6 V, 1 nF, STANDBY 0 A); worst RUN
   **79.03°** (`ss`, −40 °C, 3.6 V, 1 nF, RUN 0 A).
 - **DC, 90 cases**: RUN 1.80030–1.80090 V, STANDBY 1.80348–1.82260 V, inside
-  ±3% (1.746–1.854 V). Worst STANDBY `IQ` **19.625 µA** including imported
+  ±3% (1.746–1.854 V). Worst STANDBY `IQ` **19.70 µA** including imported
   bias/reference current.
 - **Startup, 7 cases**: minimum **−1.457 mV**, maximum **1.800782 V**. Every
   case passes the −50 mV minimum and 1.854 V maximum gate, including

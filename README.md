@@ -75,9 +75,10 @@ sheets.
 
 The load is in `schematics/load/ldo_load.sch` and is instantiated inside
 `ldo_top.sch`; `VLOAD` is tied to `VREF`, and the new `LDENB` pin is an
-active-high disable (0 = load on, VIN = off). The load is six logical MOS
-(222 unit fingers, dominated by the 210:1 output mirror) and includes a 100 pF
-mirror-gate capacitor to slow the current edge.
+active-high disable (0 = load on, VIN = off). The load is thirteen logical MOS
+(including the NAND3 sequencer; 229 unit fingers, dominated by the 210:1
+output mirror) and includes a 100 pF mirror-gate capacitor to slow the
+current edge.
 
 At `VREF=1.2 V` it sinks **97.2 mA** at `VOUT=1.8 V`; `LDENB=3.3 V` disables it
 to pA. The load is self-sequenced: with `LDENB=0` from t=0 it stays off until

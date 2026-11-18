@@ -1,0 +1,234 @@
+* gf180mcud_rahulbhagwat_ip_ldo - ldo_top design hierarchy (true netlist, for LVS)
+* regenerated from schematics/ via xschem; see scripts/import_layout.sh
+.subckt ldo_top VIN VSS VREF IBIAS EN STBY LDENB VOUT PGOOD
+*.iopin VIN
+*.iopin VSS
+*.iopin VREF
+*.iopin IBIAS
+*.iopin EN
+*.iopin STBY
+*.iopin VOUT
+*.iopin PGOOD
+*.iopin LDENB
+XSS VSS ENB VREF VREF_SS ldo_softstart
+XEA VIN VSS PB ENB STBY VREF_SS VFB GATE ldo_error_amp
+XPWR VIN VSS EN ENB GATE VOUT ldo_power_stage
+XBIAS VIN VSS IBIAS EN STBY GATE ENB PB ldo_bias
+XPG VIN VSS PB EN ENB VREF VFB PGOOD ldo_pgood
+XRTOP VFB VOUT VSS ppolyf_u_3k r_width=2u r_length=399.978u
+XRBOT VSS VFB VSS ppolyf_u_3k r_width=2u r_length=799.978u
+XRBLEED VSS VOUT VSS nplus_u r_width=0.5u r_length=3590u
+XCFF VOUT VFB cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=2
+XRZERO COMP GATE VSS ppolyf_u r_width=20u r_length=22.514u
+XRZB COMP2 COMP VSS nplus_u r_width=0.5u r_length=179.5u
+XMSWZ COMP2 STBY COMP COMP pfet_03v3 L=0.5u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=16
+XMPPRE PRE PREG VOUT VOUT pfet_03v3 L=0.5u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=30
+XRPRE VSS PRE VSS ppolyf_u r_width=200u r_length=68.229u
+XMPDIO PREG PREG STBY VIN pfet_03v3 L=1u W=10u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XRPRE_D VSS PREG VSS ppolyf_u_3k r_width=2u r_length=666.645u
+XCPRE_D PREG VSS cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=12
+XCS VIN VSS COMP2 GATE VOUT PGOOD ENB ldo_startup
+XLOAD VIN VSS VREF LDENB PGOOD STBY VOUT ldo_load
+.ends
+.subckt ldo_softstart VSS ENB VREF VREF_SS
+*.iopin VSS
+*.iopin ENB
+*.iopin VREF
+*.iopin VREF_SS
+XRSS VREF_SS VREF VSS ppolyf_u_3k r_width=2u r_length=666.645u
+XCSS VREF_SS VSS cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=40
+XMNRESET VREF_SS ENB VSS VSS nfet_03v3 L=0.5u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+.ends
+.subckt ldo_error_amp VIN VSS PB ENB STBY VREF VFB GATE
+*.iopin VIN
+*.iopin VSS
+*.iopin PB
+*.iopin ENB
+*.iopin STBY
+*.iopin VREF
+*.iopin VFB
+*.iopin GATE
+XMPEN VP ENB VIN VIN pfet_03v3 L=0.5u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=4
+XMPBIAS NB PB VP VIN pfet_03v3 L=2u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNBIAS NB NB VSS VSS nfet_03v3 L=2u W=16u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPBOOST RUN_BIAS PB VP VIN pfet_03v3 L=2u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=2
+XMPMODE NB MODEG RUN_BIAS VIN pfet_03v3 L=0.5u W=40u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XRMODE_D MODEG STBY VSS ppolyf_u_3k r_width=2u r_length=666.645u
+XCMODE_D MODEG VSS cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=10
+XMPLA A CMAVG VP VIN pfet_03v3 L=0.5u W=20u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPLB EA CMAVG VP VIN pfet_03v3 L=0.5u W=20u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XRA CMAVG A VSS ppolyf_u r_width=1u r_length=222.66u
+XRB EA CMAVG VSS ppolyf_u r_width=1u r_length=222.66u
+XMNREF A VREF TAIL VSS nfet_03v3 L=0.5u W=40u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNFB EA VFB TAIL VSS nfet_03v3 L=0.5u W=40u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNTAIL TAIL NB VSS VSS nfet_03v3 L=2u W=32u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=2
+XMPMIRDRV Q A VP VIN pfet_03v3 L=1u W=40u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=2
+XMPDRV GATE EA VP VIN pfet_03v3 L=1u W=40u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=2
+XMNMIRDRV Q Q VSS VSS nfet_03v3 L=1u W=40u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=2
+XMNDRV GATE Q VSS VSS nfet_03v3 L=1u W=40u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=2
+XRZA MC EA VSS ppolyf_u r_width=10u r_length=28.229u
+XCM MC GATE cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=20
+.ends
+.subckt ldo_power_stage VIN VSS EN ENB GATE VOUT
+*.iopin VIN
+*.iopin VSS
+*.iopin EN
+*.iopin ENB
+*.iopin GATE
+*.iopin VOUT
+XMPASS VOUT GATE VIN VIN pfet_03v3 L=0.28u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=400
+XMPOFF GATE EN VIN VIN pfet_03v3 L=0.5u W=40u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XRDIS DIS VOUT VSS ppolyf_u r_width=20u r_length=28.229u
+XMNDIS DIS ENB VSS VSS nfet_03v3 L=0.5u W=20u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+.ends
+.subckt ldo_bias VIN VSS IBIAS EN STBY GATE ENB PB
+*.iopin VIN
+*.iopin VSS
+*.iopin IBIAS
+*.iopin EN
+*.iopin STBY
+*.iopin GATE
+*.iopin ENB
+*.iopin PB
+XMNREF IBIAS IBIAS VSS VSS nfet_03v3 L=2u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNCOPY PB IBIAS VSS VSS nfet_03v3 L=2u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPREF PB PB VIN VIN pfet_03v3 L=2u W=4u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPADEN ADSUP ENB VIN VIN pfet_03v3 L=0.5u W=4u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPADMODE ADSOURCE STBY ADSUP VIN pfet_03v3 L=0.5u W=4u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPREPLICA IBIAS GATE ADSOURCE VIN pfet_03v3 L=0.28u W=0.22u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPINV ENB EN VIN VIN pfet_03v3 L=0.5u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNINV ENB EN VSS VSS nfet_03v3 L=0.5u W=1u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+.ends
+.subckt ldo_pgood VIN VSS PB EN ENB VREF VFB PGOOD
+*.iopin VIN
+*.iopin VSS
+*.iopin PB
+*.iopin EN
+*.iopin ENB
+*.iopin VREF
+*.iopin VFB
+*.iopin PGOOD
+XMPEN VP ENB VIN VIN pfet_03v3 L=0.5u W=8u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPBIAS NB PB VP VIN pfet_03v3 L=2u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNBIAS NB NB VSS VSS nfet_03v3 L=2u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPMIR MIR MIR VP VIN pfet_03v3 L=2u W=4u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPOUT RAW MIR VP VIN pfet_03v3 L=2u W=4u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNREF MIR THRESH TAIL VSS nfet_03v3 L=1u W=8u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNFB RAW VFB TAIL VSS nfet_03v3 L=1u W=8u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNTAIL TAIL NB VSS VSS nfet_03v3 L=2u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPBUF PGOOD RAW VIN VIN pfet_03v3 L=0.5u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNBUF PGOOD RAW VSS VSS nfet_03v3 L=0.5u W=1u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPOFF RAW EN VIN VIN pfet_03v3 L=0.5u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XRTH THRESH VREF VSS ppolyf_u_3k r_width=2u r_length=133.311u
+XRLOW VSS THRESH VSS ppolyf_u_3k r_width=2u r_length=1199.978u
+XRHYS HYS THRESH VSS ppolyf_u_3k r_width=2u r_length=2039.978u
+XMNHYS HYS PGOOD VSS VSS nfet_03v3 L=0.5u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+.ends
+.subckt ldo_startup VIN VSS COMP2 GATE VOUT PGOOD ENB
+*.iopin VIN
+*.iopin VSS
+*.iopin COMP2
+*.iopin GATE
+*.iopin VOUT
+*.iopin PGOOD
+*.iopin ENB
+XCC COMP2 CCF cap_mim_2f0_m4m5_noshield c_width=50u c_length=50u m=80
+XCGF GATE CGFF cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=40
+XMPCC CCF SWGCC VOUT VOUT pfet_03v3 L=0.28u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=10
+XMPCG CGFF SWGC VOUT VOUT pfet_03v3 L=0.28u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=4
+XRSWGC SWGC ENB VSS ppolyf_u_3k r_width=2u r_length=666.645u
+XCSWGC SWGC VIN cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=62
+XRSWGCC SWGCC ENB VSS ppolyf_u_3k r_width=2u r_length=666.645u
+XCSWGCC SWGCC VIN cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=205
+XRBLD BLD VOUT VSS ppolyf_u r_width=10u r_length=57.143u
+XMNBLD BLD BLED VSS VSS nfet_03v3 L=0.5u W=10u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XRBLEDPD1 BLED SWGCC VSS ppolyf_u_3k r_width=2u r_length=166.661u
+XRBLEDPD2 VSS BLED VSS ppolyf_u_3k r_width=2u r_length=666.645u
+.ends
+.subckt ldo_load VIN VSS VLOAD LDENB PGOOD STBY VOUT
+*.iopin VIN
+*.iopin VSS
+*.iopin VLOAD
+*.iopin LDENB
+*.iopin VOUT
+*.iopin PGOOD
+*.iopin STBY
+XMPINV LDB LOAD_DIS VIN VIN pfet_03v3 L=0.5u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNINV LDB LOAD_DIS VSS VSS nfet_03v3 L=0.5u W=1u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNSW VLOAD LDB ISET ISET nfet_03v3 L=0.5u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=8
+XRSET IREF ISET VSS ppolyf_u r_width=20u r_length=19.657u
+XMREF IREF IREF VSS VSS nfet_03v3 L=1u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMIR VOUT IREF VSS VSS nfet_03v3 L=1u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=210
+XMNCL IREF LOAD_DIS VSS VSS nfet_03v3 L=0.5u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XCIREF IREF VSS cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=205
+XMPSTB STBYB STBY VIN VIN pfet_03v3 L=0.5u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNSTB STBYB STBY VSS VSS nfet_03v3 L=0.5u W=1u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMPLDB LDENB_B LDENB VIN VIN pfet_03v3 L=0.5u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMNLDB LDENB_B LDENB VSS VSS nfet_03v3 L=0.5u W=1u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMP1 LOAD_DIS PGOOD VIN VIN pfet_03v3 L=0.5u W=4u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMP2 LOAD_DIS STBYB VIN VIN pfet_03v3 L=0.5u W=4u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMP3 LOAD_DIS LDENB_B VIN VIN pfet_03v3 L=0.5u W=4u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMN1 LOAD_DIS PGOOD net1 net1 nfet_03v3 L=0.5u W=4u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMN2 net1 STBYB net2 net2 nfet_03v3 L=0.5u W=4u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+XMN3 net2 LDENB_B VSS VSS nfet_03v3 L=0.5u W=4u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
++ ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
+.ends

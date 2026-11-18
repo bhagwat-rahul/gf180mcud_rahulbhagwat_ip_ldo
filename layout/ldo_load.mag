@@ -1,0 +1,131 @@
+magic
+tech gf180mcuD
+magscale 1 5
+timestamp 1795026232
+<< checkpaint >>
+rect -490 1964 1810 40732
+rect 2286 4860 4636 1074074
+rect 1966 1964 4636 4860
+rect -490 1100 4636 1964
+rect -1000 960 4636 1100
+rect -1000 180 7146 960
+rect -1030 -2230 7146 180
+rect -760 -2260 7146 -2230
+rect -490 -2290 7146 -2260
+rect -220 -2320 7146 -2290
+rect 1966 -2350 7146 -2320
+rect 2286 -2380 7146 -2350
+rect 2606 -2410 7146 -2380
+rect 2906 -285580 7146 -2410
+rect 2906 -285610 8496 -285580
+rect 2906 -285640 8766 -285610
+rect 2906 -285670 9036 -285640
+rect 2906 -285700 9306 -285670
+rect 2906 -285730 9576 -285700
+rect 2906 -288040 9846 -285730
+rect 5116 -288070 9846 -288040
+rect 5386 -288100 9846 -288070
+rect 5656 -288130 9846 -288100
+rect 5926 -288160 9846 -288130
+rect 6196 -288190 9846 -288160
+rect 6466 -288220 9846 -288190
+rect 6736 -288250 9846 -288220
+rect 7006 -288280 9846 -288250
+rect 7276 -288310 9846 -288280
+rect 7546 -288340 9846 -288310
+<< metal1 >>
+rect 0 0 100 100
+rect 0 -200 100 -100
+rect 0 -400 100 -300
+rect 0 -600 100 -500
+rect 0 -800 100 -700
+rect 0 -1000 100 -900
+rect 0 -1200 100 -1100
+use cap_mim_2p0fF_4MF6DU  XCIREF
+timestamp 1795026232
+transform 1 0 5026 0 1 -143540
+box -1120 -143500 1120 143500
+use nfet_03v3_WRPDZE  XMIR
+timestamp 1795026232
+transform 1 0 3461 0 1 535847
+box -175 -537227 175 537227
+use nfet_03v3_9UACTX  XMN1
+timestamp 1795026232
+transform 1 0 8156 0 1 -286975
+box -150 -305 150 305
+use nfet_03v3_9UACTX  XMN2
+timestamp 1795026232
+transform 1 0 8426 0 1 -287005
+box -150 -305 150 305
+use nfet_03v3_9UACTX  XMN3
+timestamp 1795026232
+transform 1 0 8696 0 1 -287035
+box -150 -305 150 305
+use nfet_03v3_K8XTZ5  XMNCL
+timestamp 1795026232
+transform 1 0 3756 0 1 -1205
+box -150 -205 150 205
+use nfet_03v3_LHRMUH  XMNINV
+timestamp 1795026232
+transform 1 0 390 0 1 -1105
+box -150 -155 150 155
+use nfet_03v3_LHRMUH  XMNLDB
+timestamp 1795026232
+transform 1 0 7076 0 1 -287005
+box -150 -155 150 155
+use nfet_03v3_LHRMUH  XMNSTB
+timestamp 1795026232
+transform 1 0 6536 0 1 -286945
+box -150 -155 150 155
+use nfet_03v3_BWZAWL  XMNSW
+timestamp 1795026232
+transform 1 0 660 0 1 19221
+box -150 -20511 150 20511
+use pfet_03v3_AA3P4B  XMP1
+timestamp 1795026232
+transform 1 0 7346 0 1 -286885
+box -150 -305 150 305
+use pfet_03v3_AA3P4B  XMP2
+timestamp 1795026232
+transform 1 0 7616 0 1 -286915
+box -150 -305 150 305
+use pfet_03v3_AA3P4B  XMP3
+timestamp 1795026232
+transform 1 0 7886 0 1 -286945
+box -150 -305 150 305
+use pfet_03v3_XTFJKC  XMPINV
+timestamp 1795026232
+transform 1 0 120 0 1 -1025
+box -150 -205 150 205
+use pfet_03v3_XTFJKC  XMPLDB
+timestamp 1795026232
+transform 1 0 6806 0 1 -286925
+box -150 -205 150 205
+use pfet_03v3_XTFJKC  XMPSTB
+timestamp 1795026232
+transform 1 0 6266 0 1 -286865
+box -150 -205 150 205
+use nfet_03v3_WLJD3L  XMREF
+timestamp 1795026232
+transform 1 0 3141 0 1 1255
+box -175 -2605 175 2605
+use ppolyf_u_QAQ45T  XRSET
+timestamp 1795026232
+transform 1 0 1888 0 1 -178
+box -1108 -1142 1108 1142
+<< labels >>
+flabel metal1 0 0 100 100 0 FreeSans 800 0 0 0 VIN
+port 0 nsew
+flabel metal1 0 -200 100 -100 0 FreeSans 800 0 0 0 VSS
+port 1 nsew
+flabel metal1 0 -400 100 -300 0 FreeSans 800 0 0 0 VLOAD
+port 2 nsew
+flabel metal1 0 -600 100 -500 0 FreeSans 800 0 0 0 LDENB
+port 3 nsew
+flabel metal1 0 -800 100 -700 0 FreeSans 800 0 0 0 PGOOD
+port 4 nsew
+flabel metal1 0 -1000 100 -900 0 FreeSans 800 0 0 0 STBY
+port 5 nsew
+flabel metal1 0 -1200 100 -1100 0 FreeSans 800 0 0 0 VOUT
+port 6 nsew
+<< end >>

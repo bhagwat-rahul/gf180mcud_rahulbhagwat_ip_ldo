@@ -1,0 +1,78 @@
+magic
+tech gf180mcuD
+magscale 1 5
+timestamp 1795026230
+<< checkpaint >>
+rect -1000 120 1100 1100
+rect -1000 90 2260 120
+rect -1000 60 2530 90
+rect -1000 -20 2800 60
+rect -1030 -200 2800 -20
+rect -1030 -330 3322 -200
+rect -1030 -2430 3592 -330
+rect -610 -2460 3592 -2430
+rect -190 -2490 3592 -2460
+rect 230 -2520 3592 -2490
+rect 500 -2550 3592 -2520
+rect 770 -2580 3592 -2550
+rect 1022 -2610 3592 -2580
+rect 1292 -2640 3592 -2610
+<< metal1 >>
+rect 0 0 100 100
+rect 0 -200 100 -100
+rect 0 -400 100 -300
+rect 0 -600 100 -500
+rect 0 -800 100 -700
+rect 0 -1000 100 -900
+rect 0 -1200 100 -1100
+rect 0 -1400 100 -1300
+use nfet_03v3_U9H8B5  XMNCOPY
+timestamp 1795026231
+transform 1 0 615 0 1 -1255
+box -225 -205 225 205
+use nfet_03v3_LHRMUH  XMNINV
+timestamp 1795026232
+transform 1 0 2442 0 1 -1485
+box -150 -155 150 155
+use nfet_03v3_U9H8B5  XMNREF
+timestamp 1795026231
+transform 1 0 195 0 1 -1225
+box -225 -205 225 205
+use pfet_03v3_AA3P4B  XMPADEN
+timestamp 1795026232
+transform 1 0 1380 0 1 -1215
+box -150 -305 150 305
+use pfet_03v3_AA3P4B  XMPADMODE
+timestamp 1795026232
+transform 1 0 1650 0 1 -1245
+box -150 -305 150 305
+use pfet_03v3_XTFJKC  XMPINV
+timestamp 1795026232
+transform 1 0 2172 0 1 -1405
+box -150 -205 150 205
+use pfet_03v3_M6H4EL  XMPREF
+timestamp 1795026231
+transform 1 0 1035 0 1 -1185
+box -225 -305 225 305
+use pfet_03v3_FPZRNX  XMPREPLICA
+timestamp 1795026230
+transform 1 0 1911 0 1 -1457
+box -141 -123 141 123
+<< labels >>
+flabel metal1 0 0 100 100 0 FreeSans 800 0 0 0 VIN
+port 0 nsew
+flabel metal1 0 -200 100 -100 0 FreeSans 800 0 0 0 VSS
+port 1 nsew
+flabel metal1 0 -400 100 -300 0 FreeSans 800 0 0 0 IBIAS
+port 2 nsew
+flabel metal1 0 -600 100 -500 0 FreeSans 800 0 0 0 EN
+port 3 nsew
+flabel metal1 0 -800 100 -700 0 FreeSans 800 0 0 0 STBY
+port 4 nsew
+flabel metal1 0 -1000 100 -900 0 FreeSans 800 0 0 0 GATE
+port 5 nsew
+flabel metal1 0 -1200 100 -1100 0 FreeSans 800 0 0 0 ENB
+port 6 nsew
+flabel metal1 0 -1400 100 -1300 0 FreeSans 800 0 0 0 PB
+port 7 nsew
+<< end >>

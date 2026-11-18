@@ -1,0 +1,129 @@
+magic
+tech gf180mcuD
+magscale 1 10
+timestamp 1795026232
+<< checkpaint >>
+rect -2058 110860 2514 717364
+rect 8358 159600 12958 302788
+rect 7818 119396 12958 159600
+rect 24717 119396 34725 4091968
+rect 82279 1645080 104031 2685488
+rect 3020 110860 34725 119396
+rect -2058 9862 34725 110860
+rect -2058 -1740 53330 9862
+rect 54451 -1740 104031 1645080
+rect -2058 -5260 104031 -1740
+rect -1486 -8120 104031 -5260
+rect 2934 -8180 104031 -8120
+rect 7306 -8240 104031 -8180
+rect 7818 -8300 104031 -8240
+rect 8358 -8360 104031 -8300
+rect 8898 -8420 104031 -8360
+rect 49270 -8480 104031 -8420
+rect 49971 -39340 104031 -8480
+<< metal1 >>
+rect 0 0 200 200
+rect 0 -400 200 -200
+rect 0 -800 200 -600
+rect 0 -1200 200 -1000
+rect 0 -1600 200 -1400
+rect 0 -2000 200 -1800
+rect 0 -2400 200 -2200
+rect 0 -2800 200 -2600
+rect 0 -3200 200 -3000
+use ldo_load  ldo_load_0
+timestamp 1795026232
+transform 1 0 84339 0 1 537340
+box -60 -574680 17692 2146148
+use ldo_pgood  ldo_pgood_0
+timestamp 1795026231
+transform 1 0 38029 0 1 320
+box -60 -3520 8183 200
+use ldo_bias  XBIAS
+timestamp 1795026230
+transform 1 0 32785 0 1 80
+box -60 -3280 5184 200
+use cap_mim_2p0fF_FHE4DD  XCFF
+timestamp 1795026232
+transform 1 0 2754 0 1 -3320
+box -2240 -2800 2240 2800
+use cap_mim_2p0fF_2RK4ZH  XCPRE_D
+timestamp 1795026232
+transform 1 0 54211 0 1 -20540
+box -2240 -16800 2240 16800
+use ldo_startup  XCS
+timestamp 1795026231
+transform 1 0 56451 0 1 1635180
+box 0 -1672520 27828 7900
+use ldo_error_amp  XEA
+timestamp 1795026230
+transform 1 0 5080 0 1 79140
+box -60 -82340 21637 38256
+use pfet_03v3_6J3ANL  XMPDIO
+timestamp 1795026232
+transform 1 0 51620 0 1 -5270
+box -350 -1210 350 1210
+use pfet_03v3_8TA4QX  XMPPRE
+timestamp 1795026232
+transform 1 0 10658 0 1 147214
+box -300 -153574 300 153574
+use pfet_03v3_YUAL7H  XMSWZ
+timestamp 1795026232
+transform 1 0 10118 0 1 75650
+box -300 -81950 300 81950
+use ldo_power_stage  XPWR
+timestamp 1795026230
+transform 1 0 26777 0 1 -960
+box -60 -2240 5948 4090928
+use nplus_u_L57V77  XRBLEED
+timestamp 1795026232
+transform 1 0 228 0 1 356052
+box -286 -359312 286 359312
+use ppolyf_u_3k  XRBOT
+timestamp 1795026230
+transform 1 0 1 0 1 -3200
+box 0 0 1 1
+use ppolyf_u_V2743G  XRPRE
+timestamp 1795026232
+transform 1 0 31114 0 1 721
+box -20216 -7141 20216 7141
+use ppolyf_u_3k  XRPRE_D
+timestamp 1795026230
+transform 1 0 51970 0 1 -6480
+box 0 0 1 1
+use ppolyf_u_3k  XRTOP
+timestamp 1795026230
+transform 1 0 0 0 1 -3200
+box 0 0 1 1
+use nplus_u_UB5E7P  XRZB
+timestamp 1795026232
+transform 1 0 9592 0 1 12022
+box -286 -18262 286 18262
+use ppolyf_u_F2FFXA  XRZERO
+timestamp 1795026232
+transform 1 0 7150 0 1 -3611
+box -2216 -2569 2216 2569
+use ldo_softstart  XSS
+timestamp 1795026229
+transform 1 0 0 0 1 107320
+box 0 -110520 5020 1540
+<< labels >>
+flabel metal1 0 0 200 200 0 FreeSans 1600 0 0 0 VIN
+port 0 nsew
+flabel metal1 0 -400 200 -200 0 FreeSans 1600 0 0 0 VSS
+port 1 nsew
+flabel metal1 0 -800 200 -600 0 FreeSans 1600 0 0 0 VREF
+port 2 nsew
+flabel metal1 0 -1200 200 -1000 0 FreeSans 1600 0 0 0 IBIAS
+port 3 nsew
+flabel metal1 0 -1600 200 -1400 0 FreeSans 1600 0 0 0 EN
+port 4 nsew
+flabel metal1 0 -2000 200 -1800 0 FreeSans 1600 0 0 0 STBY
+port 5 nsew
+flabel metal1 0 -2400 200 -2200 0 FreeSans 1600 0 0 0 LDENB
+port 6 nsew
+flabel metal1 0 -2800 200 -2600 0 FreeSans 1600 0 0 0 VOUT
+port 7 nsew
+flabel metal1 0 -3200 200 -3000 0 FreeSans 1600 0 0 0 PGOOD
+port 8 nsew
+<< end >>

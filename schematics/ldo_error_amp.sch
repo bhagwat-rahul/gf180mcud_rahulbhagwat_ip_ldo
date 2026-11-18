@@ -53,7 +53,7 @@ N 180 430 135 430 {lab=MODEG}
 C {lab_pin.sym} 135 430 0 0 {name=l12 lab=MODEG}
 C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 300 620 3 0 {name=RMODE_D W=2u L=666.645u model=ppolyf_u_3k spiceprefix=X m=1}
 C {lab_pin.sym} 300 640 0 0 {name=lrb7 lab=VSS}
-C {gf180mcu_fd_pr/cap_mim_analog.sym} 400 620 0 0 {name=CMODE_D W=20u L=12.2u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=10}
+C {gf180mcu_fd_pr/cap_mim_analog.sym} 400 620 0 0 {name=CMODE_D W=20u L=12.2u model=cap_mim_2f0_m4m5_noshield spiceprefix=X m=10}
 N 180 430 180 590 {lab=MODEG}
 N 180 590 400 590 {lab=MODEG}
 N 330 590 330 620 {lab=MODEG}
@@ -161,7 +161,7 @@ C {gf180mcu_fd_pr/ppolyf_u.sym} 1000 620 3 0 {name=RZA W=10u L=28.229u model=ppo
 C {lab_pin.sym} 1000 640 0 0 {name=lrb10 lab=VSS}
 N 970 620 940 620 {lab=EA}
 N 1030 620 1030 650 {lab=MC}
-C {gf180mcu_fd_pr/cap_mim_analog.sym} 1030 680 0 0 {name=CM W=20u L=12.2u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=20}
+C {gf180mcu_fd_pr/cap_mim_analog.sym} 1030 680 0 0 {name=CM W=20u L=12.2u model=cap_mim_2f0_m4m5_noshield spiceprefix=X m=20}
 N 1030 710 1030 740 {lab=GATE}
 C {lab_wire.sym} 940 620 0 0 {name=l40 lab=EA}
 C {lab_wire.sym} 1030 620 0 0 {name=l41 lab=MC}

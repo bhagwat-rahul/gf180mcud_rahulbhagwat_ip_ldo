@@ -32,6 +32,12 @@ C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 1640 600 0 0 {name=RBOT W=2u L=799.978u model
 C {lab_pin.sym} 1620 600 0 0 {name=lrb1 lab=VSS}
 N 1640 220 1640 370 {lab=VOUT}
 N 1640 430 1640 500 {lab=VFB}
+C {gf180mcu_fd_pr/nplus_u.sym} 1800 600 0 0 {name=RBLEED W=0.5u L=3590u model=nplus_u spiceprefix=X m=1}
+C {lab_pin.sym} 1780 600 0 0 {name=lrb4 lab=VSS}
+N 1800 570 1800 530 {lab=VOUT}
+C {lab_pin.sym} 1800 530 0 0 {name=l34 lab=VOUT}
+N 1800 630 1800 670 {lab=VSS}
+C {lab_pin.sym} 1800 670 0 0 {name=l35 lab=VSS}
 N 1640 500 1640 570 {lab=VFB}
 N 1640 500 500 500 {lab=VFB}
 N 500 500 500 250 {lab=VFB}
@@ -39,7 +45,7 @@ N 500 250 550 250 {lab=VFB}
 C {lab_pin.sym} 1640 500 0 1 {name=l4 lab=VFB}
 N 850 130 900 130 {lab=STBY}
 C {lab_pin.sym} 900 130 0 1 {name=l36 lab=STBY}
-C {gf180mcu_fd_pr/cap_mim_analog.sym} 1800 400 0 0 {name=CFF W=20u L=12.2u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=2}
+C {gf180mcu_fd_pr/cap_mim_analog.sym} 1800 400 0 0 {name=CFF W=20u L=12.2u model=cap_mim_2f0_m4m5_noshield spiceprefix=X m=2}
 N 1800 220 1800 370 {lab=VOUT}
 N 1800 430 1800 500 {lab=VFB}
 N 1800 500 1640 500 {lab=VFB}
@@ -60,8 +66,6 @@ N 1370 340 1370 400 {lab=COMP2}
 N 1370 400 1310 400 {lab=COMP2}
 N 1280 440 1280 480 {lab=STBY}
 C {lab_pin.sym} 1280 480 0 1 {name=l48 lab=STBY}
-C {gf180mcu_fd_pr/nplus_u.sym} 1800 600 0 0 {name=RBLEED W=0.5u L=3590u model=nplus_u spiceprefix=X m=1}
-C {lab_pin.sym} 1780 600 0 0 {name=lrb4 lab=VSS}
 C {gf180mcu_fd_pr/pfet_03v3.sym} 2150 300 3 0 {name=MPPRE model=pfet_03v3 spiceprefix=X W=50u L=0.5u nf=1 m=30 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
 N 2120 280 2090 280 {lab=VOUT}
 N 2120 280 2150 280 {lab=VOUT}
@@ -81,7 +85,7 @@ C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 2600 370 0 0 {name=RPRE_D W=2u L=666.645u mod
 C {lab_pin.sym} 2580 370 0 0 {name=lrb6 lab=VSS}
 N 2600 340 2600 320 {lab=PREG}
 N 2600 400 2600 420 {lab=VSS}
-C {gf180mcu_fd_pr/cap_mim_analog.sym} 2700 370 0 0 {name=CPRE_D W=20u L=12.2u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=12}
+C {gf180mcu_fd_pr/cap_mim_analog.sym} 2700 370 0 0 {name=CPRE_D W=20u L=12.2u model=cap_mim_2f0_m4m5_noshield spiceprefix=X m=12}
 N 2700 340 2700 320 {lab=PREG}
 N 2700 400 2700 420 {lab=VSS}
 C {lab_wire.sym} 2450 270 0 0 {name=l50 lab=STBY}
@@ -99,7 +103,10 @@ C {lab_wire.sym} 2150 340 0 0 {name=l44 lab=PREG}
 C {lab_wire.sym} 2210 430 0 0 {name=l45 lab=VSS}
 T {RUN: EN=1, STBY=0  |  STANDBY: EN=1, STBY=1  |  OFF: EN=0
 Feedback: 600 kohm / 1.2 Mohm. RUN preload: MPPRE + 120 ohm, ~14 mA nominal and ~9 mA hot/slow, off in STANDBY.
-RBLEED 360 kohm (~5 uA) keeps VOUT defined when the pass device is off.
+RBLEED 360 kohm n+ poly (~5 uA) is load compensation, not just a discharge
+helper: its positive TC raises the cold bleed current (fixing the ss/-40C
+STANDBY phase margin) and lowers the hot current (keeping ff/125C IQ in
+budget). It cannot be removed or re-materialized; fold it in layout.
 Compensation zero: RZERO 400 ohm in RUN; STANDBY opens MSWZ so RZB 18 kohm
 sets a ~20 kHz zero (STANDBY crossover is ~20 kHz, RUN crossover ~10 MHz).
 Mode sequencing: preload gate PREG turns off fast through MPDIO but returns slowly
@@ -161,10 +168,6 @@ N 1400 880 1440 880 {lab=PGOOD}
 C {lab_pin.sym} 1440 880 0 1 {name=l32 lab=PGOOD}
 N 1640 630 1640 670 {lab=VSS}
 C {lab_pin.sym} 1640 670 0 0 {name=l33 lab=VSS}
-N 1800 570 1800 530 {lab=VOUT}
-C {lab_pin.sym} 1800 530 0 0 {name=l34 lab=VOUT}
-N 1800 630 1800 670 {lab=VSS}
-C {lab_pin.sym} 1800 670 0 0 {name=l35 lab=VSS}
 C {ldo_startup.sym} 2600 500 0 0 {name=XCS}
 N 2450 500 2400 500 {lab=VIN}
 C {lab_pin.sym} 2400 500 0 0 {name=lxvin lab=VIN}

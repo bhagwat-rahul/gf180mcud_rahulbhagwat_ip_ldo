@@ -17,13 +17,13 @@ C {iopin.sym} 600 60 0 0 {name=p4 lab=VOUT}
 C {iopin.sym} 600 90 0 0 {name=p5 lab=PGOOD}
 C {iopin.sym} 600 120 0 0 {name=p6 lab=ENB}
 
-C {gf180mcu_fd_pr/cap_mim_analog.sym} -200 60 3 0 {name=CC W=50u L=50u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=80}
+C {gf180mcu_fd_pr/cap_mim_analog.sym} -200 60 3 0 {name=CC W=50u L=50u model=cap_mim_2f0_m4m5_noshield spiceprefix=X m=80}
 N -230 60 -280 60 {lab=COMP2}
 C {lab_pin.sym} -280 60 0 0 {name=lp1 lab=COMP2}
 N -170 60 -120 60 {lab=CCF}
 C {lab_pin.sym} -120 60 0 0 {name=lp2 lab=CCF}
 
-C {gf180mcu_fd_pr/cap_mim_analog.sym} -200 120 3 0 {name=CGF W=20u L=12.2u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=40}
+C {gf180mcu_fd_pr/cap_mim_analog.sym} -200 120 3 0 {name=CGF W=20u L=12.2u model=cap_mim_2f0_m4m5_noshield spiceprefix=X m=40}
 N -230 120 -280 120 {lab=GATE}
 C {lab_pin.sym} -280 120 0 0 {name=lp3 lab=GATE}
 N -170 120 -120 120 {lab=CGFF}
@@ -52,7 +52,7 @@ N -420 -100 -360 -100 {lab=SWGC}
 C {lab_pin.sym} -360 -100 0 0 {name=lp12 lab=SWGC}
 C {lab_pin.sym} -450 -80 0 0 {name=lp13 lab=VSS}
 
-C {gf180mcu_fd_pr/cap_mim_analog.sym} -250 -100 3 0 {name=CSWGC W=20u L=12.2u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=62}
+C {gf180mcu_fd_pr/cap_mim_analog.sym} -250 -100 3 0 {name=CSWGC W=20u L=12.2u model=cap_mim_2f0_m4m5_noshield spiceprefix=X m=62}
 N -280 -100 -340 -100 {lab=SWGC}
 C {lab_pin.sym} -340 -100 0 0 {name=lp14 lab=SWGC}
 N -220 -100 -160 -100 {lab=VIN}
@@ -65,7 +65,7 @@ N -420 -180 -360 -180 {lab=SWGCC}
 C {lab_pin.sym} -360 -180 0 0 {name=lp27 lab=SWGCC}
 C {lab_pin.sym} -450 -160 0 0 {name=lp28 lab=VSS}
 
-C {gf180mcu_fd_pr/cap_mim_analog.sym} -250 -180 3 0 {name=CSWGCC W=20u L=12.2u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=205}
+C {gf180mcu_fd_pr/cap_mim_analog.sym} -250 -180 3 0 {name=CSWGCC W=20u L=12.2u model=cap_mim_2f0_m4m5_noshield spiceprefix=X m=205}
 N -280 -180 -340 -180 {lab=SWGCC}
 C {lab_pin.sym} -340 -180 0 0 {name=lp29 lab=SWGCC}
 N -220 -180 -160 -180 {lab=VIN}

@@ -4,7 +4,7 @@ K {}
 V {}
 S {}
 E {}
-T {On-die 0-100 mA load - NMOS mirror, 210:1, disabled by LDENB} 0 -170 0 0 0.45 0.45 {}
+T {On-die 0-100 mA load - NMOS mirror, 210:1. NAND3(PGOOD,STBYB,LDENB_B) drives LOAD_DIS: on only in RUN after PGOOD with LDENB low.} 0 -170 0 0 0.45 0.45 {}
 C {iopin.sym} 0 -90 0 0 {name=p0 lab=VIN}
 C {iopin.sym} 140 -90 0 0 {name=p1 lab=VSS}
 C {iopin.sym} 280 -90 0 0 {name=p2 lab=VLOAD}
@@ -72,7 +72,7 @@ N 470 220 470 250 {lab=ISET}
 N 720 400 720 430 {lab=VSS}
 N 970 400 970 430 {lab=VSS}
 N 620 520 620 550 {lab=VSS}
-C {gf180mcu_fd_pr/cap_mim_analog.sym} 850 500 0 0 {name=CIREF W=20u L=12.2u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=205}
+C {gf180mcu_fd_pr/cap_mim_analog.sym} 850 500 0 0 {name=CIREF W=20u L=12.2u model=cap_mim_2f0_m4m5_noshield spiceprefix=X m=205}
 N 850 470 850 440 {lab=IREF}
 C {lab_pin.sym} 850 440 0 0 {name=lc1 lab=IREF}
 N 850 530 850 560 {lab=VSS}
@@ -123,12 +123,21 @@ N 2520 180 2520 210 {lab=LOAD_DIS}
 C {lab_pin.sym} 2520 210 0 0 {name=lMP3d lab=LOAD_DIS}
 N 2480 150 2440 150 {lab=LDENB_B}
 C {lab_pin.sym} 2440 150 0 0 {name=lMP3g lab=LDENB_B}
-C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 2700 300 3 0 {name=RPD W=0.5u L=3333.3u model=ppolyf_u_3k spiceprefix=X m=1}
-N 2670 300 2620 300 {lab=LOAD_DIS}
-C {lab_pin.sym} 2620 300 0 0 {name=ls11 lab=LOAD_DIS}
-N 2730 300 2780 300 {lab=VSS}
-C {lab_pin.sym} 2780 300 0 0 {name=ls12 lab=VSS}
 N 1520 300 1520 330 {lab=VSS}
 N 1820 300 1820 330 {lab=VSS}
-N 2700 320 2700 340 {lab=VSS}
-C {lab_pin.sym} 2700 340 0 0 {name=ls13 lab=VSS}
+
+C {gf180mcu_fd_pr/nfet_03v3.sym} 2900 150 0 0 {name=MN1 model=nfet_03v3 spiceprefix=X W=4u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+N 2920 120 2920 90 {lab=LOAD_DIS}
+C {lab_pin.sym} 2920 90 0 0 {name=lsd1 lab=LOAD_DIS}
+N 2880 150 2840 150 {lab=PGOOD}
+C {lab_pin.sym} 2840 150 0 0 {name=lsg1 lab=PGOOD}
+N 2920 150 2920 180 {lab=NS1}
+C {gf180mcu_fd_pr/nfet_03v3.sym} 2900 210 0 0 {name=MN2 model=nfet_03v3 spiceprefix=X W=4u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+N 2880 210 2840 210 {lab=STBYB}
+C {lab_pin.sym} 2840 210 0 0 {name=lsg2 lab=STBYB}
+N 2920 210 2920 240 {lab=NS2}
+C {gf180mcu_fd_pr/nfet_03v3.sym} 2900 270 0 0 {name=MN3 model=nfet_03v3 spiceprefix=X W=4u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+N 2880 270 2840 270 {lab=LDENB_B}
+C {lab_pin.sym} 2840 270 0 0 {name=lsg3 lab=LDENB_B}
+N 2920 270 2920 330 {lab=VSS}
+C {lab_pin.sym} 2920 330 0 0 {name=lss3 lab=VSS}
