@@ -80,11 +80,12 @@ active-high disable (0 = load on, VIN = off). The load is six logical MOS
 mirror-gate capacitor to slow the current edge.
 
 At `VREF=1.2 V` it sinks **97.2 mA** at `VOUT=1.8 V`; `LDENB=3.3 V` disables it
-to pA. With the LDO already in regulation, the 0↔97 mA step gives
-**1.713–1.858 V** at typical/100 pF, inside the provisional 1.62–1.98 V
-transient gate. Enabling the load from t=0 during startup peaks at ~1.88 V, so
-the intended sequence is to enable it after PGOOD. The external 1.2 V reference
-must supply the load's ~0.46 mA reference current.
+to pA. The load is self-sequenced: with `LDENB=0` from t=0 it stays off until
+`PGOOD`, then enables, and it is forced off in STANDBY/OFF. Startup is therefore
+clean (min −1.44 mV, max 1.8005 V) without externally timed load enable. The
+0↔97 mA step after regulation is **1.725–1.866 V** at typical/100 pF, inside the
+provisional 1.62–1.98 V transient gate. The external 1.2 V reference must supply
+the load's ~0.46 mA reference current.
 
 ## What's an LDO?
 

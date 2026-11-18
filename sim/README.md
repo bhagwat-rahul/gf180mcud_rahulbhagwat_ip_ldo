@@ -58,10 +58,10 @@ than treating a generated plot as a pass. Outputs default to ignored
 | `ldo_softstart.sch` | 1 | 1 MΩ / 20 pF reference ramp and reset switch |
 | `ldo_pgood.sch` | 12 | Final-reference comparator, hysteresis, VIN-domain buffer, OFF masking |
 | `ldo_startup.sch` | 3 | CC/CGF soft-connect switches, 2 kΩ switched bleed, ENB-RC sequencing |
-| `load/ldo_load.sch` | 6 | On-die 0–100 mA NMOS mirror load, 210:1 output, 100 pF mirror-gate cap |
+| `load/ldo_load.sch` | 13 | On-die 0–100 mA NMOS mirror load, 210:1 output, 100 pF gate cap, PGOOD/STBY sequencer |
 
-Total: 44 logical MOS; the load's output mirror alone is 210 unit fingers
-(222 unit devices in the load). The on-die resistors are GF180MCU-D poly devices and the
+Total: 51 logical MOS; the load's output mirror alone is 210 unit fingers
+(229 unit devices in the load including the sequencer). The on-die resistors are GF180MCU-D poly devices and the
 on-die capacitors are MIM devices; only the external 1.2 V reference and the
 sourced 1 µA bias remain ideal. Multiplicity, matching, isolation, contacts and
 power routing are additional layout work.
@@ -76,7 +76,7 @@ There is no control decoder, SPI, sequencer, oscillator or Verilog in this slice
 | `STBY` | VIN-domain high disables replica adaptation; EN remains high to regulate |
 | `VOUT` | Nominal 1.8 V regulated output; full current stays on die, pad is sense/light-load only |
 | `PGOOD` | VIN-domain status, not a package-pad driver; final-reference threshold, low in OFF |
-| `LDENB` | VIN-domain active-high disable for the on-die load; 0 = load enabled, VIN = disabled |
+| `LDENB` | VIN-domain active-high disable request for the on-die load; the internal sequencer enables the load only when `LDENB=0`, `PGOOD=1`, and `STBY=0`. `LDENB=1` forces it off; a 20 MΩ pull-down makes an unconnected pin request the load, which still waits for PGOOD. |
 
 EN=1/STBY=0 is RUN; EN=1/STBY=1 is STANDBY; EN=0 is OFF. STANDBY does not
 limit the external load to 1 mA: the future load controller must enforce that.
@@ -86,11 +86,11 @@ operating modes established by these tests.
 
 The on-die load's `VLOAD` reference is tied to `VREF` inside `ldo_top`, so the
 external 1.2 V reference must also supply the load's ~0.46 mA reference current.
-The load is intended to be enabled after PGOOD (or after the LDO is in
-regulation), not during startup. With `LDENB=0` from t=0 the LDO still starts,
-but the output overshoots to ~1.88 V; with the load enabled after PGOOD the
-0↔97 mA step stays within the provisional 1.62–1.98 V gate (1.713–1.858 V
-typical, 100 pF output).
+The load is self-sequenced: with `LDENB=0` from t=0 it stays off until
+`PGOOD`, then enables; it is forced off in STANDBY and OFF. That makes startup
+clean (worst min −1.44 mV, max 1.8005 V) without externally timed load enable.
+The 0↔97 mA step after regulation is 1.725–1.866 V at typical/100 pF, inside
+the provisional 1.62–1.98 V gate.
 
 ## Tests and interpretation
 

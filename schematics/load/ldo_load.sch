@@ -10,17 +10,19 @@ C {iopin.sym} 140 -90 0 0 {name=p1 lab=VSS}
 C {iopin.sym} 280 -90 0 0 {name=p2 lab=VLOAD}
 C {iopin.sym} 420 -90 0 0 {name=p3 lab=LDENB}
 C {iopin.sym} 560 -90 0 0 {name=p4 lab=VOUT}
+C {iopin.sym} 700 -90 0 0 {name=p5 lab=PGOOD}
+C {iopin.sym} 840 -90 0 0 {name=p6 lab=STBY}
 C {gf180mcu_fd_pr/pfet_03v3.sym} 200 150 0 0 {name=MPINV model=pfet_03v3 spiceprefix=X W=2u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
 N 220 120 220 150 {lab=VIN}
 C {lab_pin.sym} 220 120 0 0 {name=lp1 lab=VIN}
-N 180 150 160 150 {lab=LDENB}
-C {lab_pin.sym} 160 150 0 0 {name=lp2 lab=LDENB}
+N 180 150 160 150 {lab=LOAD_DIS}
+C {lab_pin.sym} 160 150 0 0 {name=lp2 lab=LOAD_DIS}
 N 220 180 220 270 {lab=LDB}
 N 220 210 250 210 {lab=LDB}
 C {lab_pin.sym} 250 210 0 0 {name=lp3 lab=LDB}
 C {gf180mcu_fd_pr/nfet_03v3.sym} 200 300 0 0 {name=MNINV model=nfet_03v3 spiceprefix=X W=1u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
-N 180 300 160 300 {lab=LDENB}
-C {lab_pin.sym} 160 300 0 0 {name=lp4 lab=LDENB}
+N 180 300 160 300 {lab=LOAD_DIS}
+C {lab_pin.sym} 160 300 0 0 {name=lp4 lab=LOAD_DIS}
 N 220 330 220 360 {lab=VSS}
 C {lab_pin.sym} 220 360 0 0 {name=lp5 lab=VSS}
 C {gf180mcu_fd_pr/nfet_03v3.sym} 450 220 0 0 {name=MNSW model=nfet_03v3 spiceprefix=X W=50u L=0.5u nf=1 m=8 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
@@ -55,8 +57,8 @@ C {lab_pin.sym} 970 460 0 0 {name=lp13 lab=VSS}
 C {gf180mcu_fd_pr/nfet_03v3.sym} 600 520 0 0 {name=MNCL model=nfet_03v3 spiceprefix=X W=2u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
 N 600 340 600 490 {lab=IREF}
 N 600 490 620 490 {lab=IREF}
-N 580 520 550 520 {lab=LDENB}
-C {lab_pin.sym} 550 520 0 0 {name=lp14 lab=LDENB}
+N 580 520 550 520 {lab=LOAD_DIS}
+C {lab_pin.sym} 550 520 0 0 {name=lp14 lab=LOAD_DIS}
 N 620 550 620 580 {lab=VSS}
 C {lab_pin.sym} 620 580 0 0 {name=lp15 lab=VSS}
 T {VLOAD sets the reference current through RSET: IREF = (VLOAD - VGS)/350 ohm.
@@ -75,3 +77,58 @@ N 850 470 850 440 {lab=IREF}
 C {lab_pin.sym} 850 440 0 0 {name=lc1 lab=IREF}
 N 850 530 850 560 {lab=VSS}
 C {lab_pin.sym} 850 560 0 0 {name=lc2 lab=VSS}
+
+C {gf180mcu_fd_pr/pfet_03v3.sym} 1500 150 0 0 {name=MPSTB model=pfet_03v3 spiceprefix=X W=2u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+C {gf180mcu_fd_pr/nfet_03v3.sym} 1500 300 0 0 {name=MNSTB model=nfet_03v3 spiceprefix=X W=1u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+N 1520 120 1520 150 {lab=VIN}
+C {lab_pin.sym} 1520 120 0 0 {name=ls1 lab=VIN}
+N 1520 330 1520 360 {lab=VSS}
+C {lab_pin.sym} 1520 360 0 0 {name=ls2 lab=VSS}
+N 1480 150 1440 150 {lab=STBY}
+C {lab_pin.sym} 1440 150 0 0 {name=ls3 lab=STBY}
+N 1480 300 1440 300 {lab=STBY}
+C {lab_pin.sym} 1440 300 0 0 {name=ls4 lab=STBY}
+N 1520 180 1520 270 {lab=STBYB}
+C {lab_pin.sym} 1520 210 0 0 {name=ls5 lab=STBYB}
+C {gf180mcu_fd_pr/pfet_03v3.sym} 1800 150 0 0 {name=MPLDB model=pfet_03v3 spiceprefix=X W=2u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+C {gf180mcu_fd_pr/nfet_03v3.sym} 1800 300 0 0 {name=MNLDB model=nfet_03v3 spiceprefix=X W=1u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+N 1820 120 1820 150 {lab=VIN}
+C {lab_pin.sym} 1820 120 0 0 {name=ls6 lab=VIN}
+N 1820 330 1820 360 {lab=VSS}
+C {lab_pin.sym} 1820 360 0 0 {name=ls7 lab=VSS}
+N 1780 150 1740 150 {lab=LDENB}
+C {lab_pin.sym} 1740 150 0 0 {name=ls8 lab=LDENB}
+N 1780 300 1740 300 {lab=LDENB}
+C {lab_pin.sym} 1740 300 0 0 {name=ls9 lab=LDENB}
+N 1820 180 1820 270 {lab=LDENB_B}
+C {lab_pin.sym} 1820 210 0 0 {name=ls10 lab=LDENB_B}
+C {gf180mcu_fd_pr/pfet_03v3.sym} 2100 150 0 0 {name=MP1 model=pfet_03v3 spiceprefix=X W=4u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+N 2120 120 2120 150 {lab=VIN}
+C {lab_pin.sym} 2120 120 0 0 {name=lMP1vin lab=VIN}
+N 2120 180 2120 210 {lab=LOAD_DIS}
+C {lab_pin.sym} 2120 210 0 0 {name=lMP1d lab=LOAD_DIS}
+N 2080 150 2040 150 {lab=PGOOD}
+C {lab_pin.sym} 2040 150 0 0 {name=lMP1g lab=PGOOD}
+C {gf180mcu_fd_pr/pfet_03v3.sym} 2300 150 0 0 {name=MP2 model=pfet_03v3 spiceprefix=X W=4u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+N 2320 120 2320 150 {lab=VIN}
+C {lab_pin.sym} 2320 120 0 0 {name=lMP2vin lab=VIN}
+N 2320 180 2320 210 {lab=LOAD_DIS}
+C {lab_pin.sym} 2320 210 0 0 {name=lMP2d lab=LOAD_DIS}
+N 2280 150 2240 150 {lab=STBYB}
+C {lab_pin.sym} 2240 150 0 0 {name=lMP2g lab=STBYB}
+C {gf180mcu_fd_pr/pfet_03v3.sym} 2500 150 0 0 {name=MP3 model=pfet_03v3 spiceprefix=X W=4u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
+N 2520 120 2520 150 {lab=VIN}
+C {lab_pin.sym} 2520 120 0 0 {name=lMP3vin lab=VIN}
+N 2520 180 2520 210 {lab=LOAD_DIS}
+C {lab_pin.sym} 2520 210 0 0 {name=lMP3d lab=LOAD_DIS}
+N 2480 150 2440 150 {lab=LDENB_B}
+C {lab_pin.sym} 2440 150 0 0 {name=lMP3g lab=LDENB_B}
+C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 2700 300 3 0 {name=RPD W=0.5u L=3333.3u model=ppolyf_u_3k spiceprefix=X m=1}
+N 2670 300 2620 300 {lab=LOAD_DIS}
+C {lab_pin.sym} 2620 300 0 0 {name=ls11 lab=LOAD_DIS}
+N 2730 300 2780 300 {lab=VSS}
+C {lab_pin.sym} 2780 300 0 0 {name=ls12 lab=VSS}
+N 1520 300 1520 330 {lab=VSS}
+N 1820 300 1820 330 {lab=VSS}
+N 2700 320 2700 340 {lab=VSS}
+C {lab_pin.sym} 2700 340 0 0 {name=ls13 lab=VSS}

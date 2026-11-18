@@ -190,5 +190,9 @@ N 3050 560 3000 560 {lab=VREF}
 C {lab_pin.sym} 3000 560 0 0 {name=lxlvref lab=VREF}
 N 3050 590 3000 590 {lab=LDENB}
 C {lab_pin.sym} 3000 590 0 0 {name=lxldenb lab=LDENB}
+N 3050 620 3000 620 {lab=PGOOD}
+C {lab_pin.sym} 3000 620 0 0 {name=lxlpgood lab=PGOOD}
+N 3050 650 3000 650 {lab=STBY}
+C {lab_pin.sym} 3000 650 0 0 {name=lxlstby lab=STBY}
 N 3350 560 3400 560 {lab=VOUT}
 C {lab_pin.sym} 3400 560 0 0 {name=lxlvout lab=VOUT}
