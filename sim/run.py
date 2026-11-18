@@ -25,6 +25,7 @@ from loopgain import margins, tian
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMATICS = ROOT / 'schematics'
 LOW, HIGH = 1.8 * 0.97, 1.8 * 1.03
+STARTUP_MIN = -0.05  # bounded negative tolerance during startup; target is 0 V
 
 
 def replace_once(text, old, new):
@@ -236,12 +237,16 @@ def main():
         discharged = d[(d[:, 0] >= .000801) & (d[:, 1] < .18), 0]
         discharge_us = float((discharged[0] - .000801) * 1e6) if len(discharged) else None
         off_pgood = float(d[-1, 2])
-        transient.append(dict(name=name, min_V=float(d[:, 1].min()), max_V=float(d[:, 1].max()),
+        min_v, max_v = float(d[:, 1].min()), float(d[:, 1].max())
+        settled_ok = bool(LOW <= settled <= HIGH and d[-1, 1] < .01
+                          and off_pgood < .33 and discharge_us is not None
+                          and discharge_us < 10)
+        transient.append(dict(name=name, min_V=min_v, max_V=max_v,
                               settled_V=settled, off_V=float(d[-1, 1]),
                               off_pgood_V=off_pgood, discharge_90pct_us=discharge_us,
-                              settled_ok=bool(LOW <= settled <= HIGH and d[-1, 1] < .01
-                                              and off_pgood < .33 and discharge_us is not None
-                                              and discharge_us < 10)))
+                              settled_ok=settled_ok,
+                              startup_ok=bool(min_v >= STARTUP_MIN and max_v <= HIGH
+                                              and settled_ok)))
 
     net = replace_once(circuit(), 'VSTBY STBY 0 0', 'VSTBY STBY 0 PWL(0 0 200u 0 201u 3.3 600u 3.3 601u 0)')
     run('modes', net, f'tran 20n 1m\nwrdata {out / "modes.dat"} v(vout) v(stby) i(vsup) v(pgood)')
@@ -272,6 +277,8 @@ def main():
                               ac=sum(not r['pm_ok'] for r in ac),
                               dropout=sum(not r['headroom_300mV_ok'] for r in dropout),
                               transient=sum(not r['settled_ok'] for r in transient),
+                              startup=sum(not r.get('startup_ok', True) for r in transient
+                                          if r['name'].startswith('startup')),
                               pgood=int(not pgood['ok']))
     (out / 'results.json').write_text(json.dumps(results, indent=2) + '\n')
     for name, rows in [('dc', dc), ('ac', ac), ('dropout', dropout)]:

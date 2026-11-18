@@ -57,9 +57,12 @@ than treating a generated plot as a pass. Outputs default to ignored
 | `ldo_power_stage.sch` | 3 | 10,000 µm total-width PMOS pass device, gate OFF clamp, output discharge |
 | `ldo_softstart.sch` | 1 | 1 MΩ / 20 pF reference ramp and reset switch |
 | `ldo_pgood.sch` | 12 | Final-reference comparator, hysteresis, VIN-domain buffer, OFF masking |
+| `ldo_startup.sch` | 3 | CC/CGF soft-connect switches, 2 kΩ switched bleed, ENB-RC sequencing |
 
-Total: 35 logical MOS, 10 ideal resistors, 3 ideal capacitors. Multiplicity,
-matching, isolation, contacts and power routing are additional layout work.
+Total: 38 logical MOS. The on-die resistors are GF180MCU-D poly devices and the
+on-die capacitors are MIM devices; only the external 1.2 V reference and the
+sourced 1 µA bias remain ideal. Multiplicity, matching, isolation, contacts and
+power routing are additional layout work.
 There is no control decoder, SPI, sequencer, oscillator or Verilog in this slice.
 
 | Pin | Meaning |
@@ -250,95 +253,63 @@ Local evidence: `.amp/in/driver-baseline-final/`,
 `.amp/in/driver-restored-controls/` and `.amp/in/load-checker-controls/`.
 The rejected candidate was not advanced to full-PVT, mismatch or layout tests.
 
-## Single-loop redesign — November 15
+## Final PDK-passive design — November 18
 
-The redesign is implemented in `schematics/` (byte-identical copy and
-characterization outputs under `.amp/in/single-loop/candidate/`; netlist hash
-manifest in `.amp/in/single-loop/candidate3-full/sources.json`).
+The final design uses GF180MCU-D poly resistors and MIM capacitors throughout.
+The startup block is `schematics/ldo_startup.sch`; the latest full matrix is
+`.amp/in/single-loop/pdk-fix3/`, generated from the current sheets.
 
-Topology is unchanged (single balanced two-stage error amplifier, PMOS pass
-device, adaptive RUN bias). The redesign changes the operating point, the
-compensation and the mode hand-over:
+| Item | Value |
+| --- | --- |
+| `MPASS` | 50 µm × 0.28 µm, m=400 (20 mm total) |
+| Feedback `RTOP`/`RBOT` | 80 kΩ / 160 kΩ |
+| `RZERO` / `RZB` | 400 Ω / 18 kΩ |
+| `CC` / `CGF` | 400 pF / 19.5 pF |
+| Preload `MPPRE` | 50 µm × 0.5 µm, m=30, 120 Ω |
+| OFF clamp | `RDIS` 500 Ω, `MNDIS` 20 µm, `MPOFF` 40 µm |
+| Startup | CC/CGF PMOS soft-connect, 2 kΩ bleed, ENB RC ramps |
 
-| Item | Value | Reason |
-| --- | --- | --- |
-| `MPASS` | 50 µm × 0.28 µm, m=800 | 100 mA at low dropout over PVT |
-| Feedback `RA`/`RB` | 80 kΩ each | STANDBY setpoint error scales as 1/RA |
-| `RZERO` / `RZB` | 400 Ω / 9.6 kΩ | RUN zero 400 Ω; STANDBY zero ~20 kHz |
-| `MSWZ` | 50 µm × 0.5 µm, m=16 | opens in STANDBY, selects `RZB` |
-| `CC` / `CGF` | 800 pF / 20 pF | loop crossover and gate feed-forward |
-| Preload `MPPRE` | 50 µm × 0.5 µm, m=30, 120 Ω | ~14 mA typical, off in STANDBY |
-| OFF clamp | `RDIS` 500 Ω, `MNDIS` 20 µm, `MPOFF` 40 µm | off error ≤2.34 mV |
-| Mode sequencing | `MPDIO` + 1 MΩ/6 pF; 1 MΩ/5 pF | fast preload off, slow on; boost delay |
-
-`MSWZ` is a PMOS whose source/bulk is `COMP` and whose gate is `STBY`. In RUN
-(VSG ≈ 2.6 V) it is a low-value switch in parallel with `RZB`, so the zero is
-`RZERO` = 400 Ω. In STANDBY the gate is at 3.3 V and the switch is off, so the
-zero moves to `RZERO`+`RZB` ≈ 10 kΩ, i.e. ~20 kHz at the STANDBY crossover.
-The change is worth about 40° of STANDBY phase margin at 0 A.
-
-The preload gate and the boost bias are sequenced because the switch, the boost
-bias and the preload turn off at different STANDBY thresholds. The preload gate
-`PREG` turns off through the diode-connected `MPDIO` and returns through
-`RPRE_D`/`CPRE_D` (1 MΩ, 6 pF); the boost gate `MODEG` has a symmetric 1 MΩ/5 pF
-delay. Without this, mode changes drive the output to 1.616–1.919 V
-(limits 1.746–1.854 V).
+`CC` and `CGF` are disconnected while the pass gate falls, then reconnect on
+separate `ENB` ramps: `CGF` first (30 pF, stabilizes the loop) and `CC` later
+(100 pF). A 2 kΩ switched bleed holds `VOUT` at zero; a 250 kΩ/1 MΩ divider
+from the `CC` ramp turns the bleed off only after compensation is restored.
 
 ### Results from the editable sheets
 
-Command (inside IIC-OSIC, GF180MCU-D loaded):
-
 ```sh
-python3 sim/run.py --full \
-  --schematics .amp/in/single-loop/candidate/schematics \
-  --out .amp/in/single-loop/candidate3-full --jobs 8
+python3 sim/run.py --full --jobs 4 --out .amp/in/single-loop/pdk-fix3
 ```
 
-- **AC, all 1080 cases** (5 corners × 3 temperatures × 3 supplies × 3
-  capacitances × RUN loads 0/10 µA/100 µA/1 mA/10 mA/100 mA + STANDBY 0/1 mA):
-  every case has a single unity crossing. Worst valid phase margin is
-  **72.08°** (`fs`, 125 °C, 3.6 V, 1 nF, STANDBY 0 A). Worst RUN case is
-  **77.12°** (`ff`, −40 °C, 3.6 V, 1 nF, 0 A). The provisional ≥60° gate is met
-  with margin.
-- **Nine cases are flagged by the 40 dB gain-validity heuristic, not by phase
-  margin.** All are STANDBY 0 A at `ff`/125 °C, where the pass device carries
-  only the ~16 µA divider/bleed current, so the loop gain is genuinely
-  32.4–36.4 dB; phase margin is 78.0–91.3° and there is one crossing. A reversed
-  probe at 800 points/decade reproduces the same margins (Δ<0.01°), the same
-  operating point and the same single crossing
-  (`.amp/in/single-loop/reverse-flagged/`). These cases therefore do not meet
-  the 40 dB validity precondition even though their measured margin passes.
-- **DC, 90 cases**: RUN 1.8002–1.8007 V; STANDBY 1.8042–1.8287 V (worst +28.7 mV,
-  1.6%, at `ff`/125 °C/3.6 V). Both are inside ±3% (1.746–1.854 V). Worst STANDBY
-  `IQ` is **17.60 µA** including imported bias/reference current.
-- **Dropout**: with 300 mV headroom (VIN = 2.1 V) VOUT stays at 1.800–1.8002 V in
-  all 15 corner/temperature points; the 100 mA output stays in band down to
-  VIN ≈ 1.765–1.790 V.
-- **Exact 100 ns steps** (`sim/check_load_steps.py`, 10/100/1000 pF, provisional
-  1.62–1.98 V and ≤20 µs gates): **270/270 pass** (5 corners × 3 temperatures ×
-  3 supplies × 3 capacitances × both directions, 100 ns edge, 2 ns maximum step).
-  Worst low excursion is **1.6849 V** (`ss`, 125 °C, 3.0 V, 1 nF, up-step); worst
-  high excursion is **1.9515 V** (`ss`, 125 °C, 3.0 V, 10 pF, down-step). Maximum
-  recovery is **0.041 µs** against the 20 µs gate; peak supply current 116.9 mA.
-  The spread across 10 pF/100 pF/1 nF is small, so the loop is not relying on a
-  particular external capacitance.
-- **Startup/shutdown, 7 cases**: all settle to 1.8003–1.8006 V; OFF output
-  0.00009–2.34 mV (worst is the hot `ff` case, matching the OFF-clamp fix);
-  PGOOD low in OFF (≤4.7e-8 V); 90% discharge within 1.25 µs at 100 pF.
-- **RUN↔STANDBY↔RUN** at 1 mA: output stays within **1.7601–1.8298 V** through
-  both mode edges (limits 1.746–1.854 V) and settles.
-- **PGOOD**: rising equivalent 1.625 V, falling 1.535 V (nominal comparator, not
-  a full PVT/mismatch characterisation).
+- **AC, 1080 cases**: every case has one unity crossing and is valid. Worst
+  phase margin **62.08°** (`ss`, −40 °C, 3.6 V, 1 nF, STANDBY 0 A); worst RUN
+  **79.03°** (`ss`, −40 °C, 3.6 V, 1 nF, RUN 0 A).
+- **DC, 90 cases**: RUN 1.80030–1.80090 V, STANDBY 1.80348–1.82260 V, inside
+  ±3% (1.746–1.854 V). Worst STANDBY `IQ` **19.625 µA** including imported
+  bias/reference current.
+- **Startup, 7 cases**: minimum **−1.457 mV**, maximum **1.800782 V**. Every
+  case passes the −50 mV minimum and 1.854 V maximum gate, including
+  `ss`/−40 °C/3.6 V/10 pF.
+- **Dropout, 15 cases**: VOUT at VIN=2.1 V is 1.80012–1.80033 V; all pass the
+  300 mV headroom check.
+- **Transient, 10 cases**: all settle inside ±3%; the 100 ns load-step peak is
+  1.877 V. No transient excursion limit has been agreed.
+- **PGOOD**: rising 1.6249 V, falling 1.5342 V.
+- **RUN↔STANDBY↔RUN**: output stays within 1.7720–1.8327 V and settles.
+
+The separate exact 0↔100 mA / 100 ns 270-case matrix has not been re-run on the
+PDK-passive design; the 10-case in-run transient set passes. The 1.2 V reference
+and sourced 1 µA bias remain ideal. This is schematic evidence only: no layout,
+mismatch, EM/IR or package model is included.
 
 ### Reproduction
 
 ```sh
 iic-pdk gf180mcuD
-python3 sim/run.py --full --schematics .amp/in/single-loop/candidate/schematics \
-  --out .amp/in/single-loop/candidate3-full --jobs 8
-python3 sim/check_load_steps.py --schematics .amp/in/single-loop/candidate/schematics \
+python3 sim/run.py --full --jobs 4 --out .amp/in/single-loop/pdk-fix3
+# pending: re-run the 270-case exact-step matrix on the current sheets
+python3 sim/check_load_steps.py --schematics schematics \
   --corners typical ff ss fs sf --temps -40 27 125 --volts 3.0 3.3 3.6 \
-  --caps-pf 10 100 1000 --out .amp/in/single-loop/steps3 --jobs 8
+  --caps-pf 10 100 1000 --out .amp/in/single-loop/steps-final --jobs 8
 python3 sim/check_stability.py .amp/in/single-loop/candidate3-full \
   --out .amp/in/single-loop/stability3 --jobs 4
 ```

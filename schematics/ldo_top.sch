@@ -48,27 +48,20 @@ C {lab_pin.sym} 1010 360 0 0 {name=lrb2 lab=VSS}
 C {gf180mcu_fd_pr/nplus_u.sym} 1160 340 3 0 {name=RZB W=0.5u L=179.5u model=nplus_u spiceprefix=X m=1}
 C {lab_pin.sym} 1160 360 0 0 {name=lrb3 lab=VSS}
 C {gf180mcu_fd_pr/pfet_03v3.sym} 1280 420 3 0 {name=MSWZ model=pfet_03v3 spiceprefix=X W=50u L=0.5u nf=1 m=16 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
-C {gf180mcu_fd_pr/cap_mim_analog.sym} 1450 340 3 0 {name=CC W=50u L=50u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=80}
 N 960 220 960 340 {lab=GATE}
 N 960 340 980 340 {lab=GATE}
 N 1040 340 1130 340 {lab=COMP}
 C {lab_wire.sym} 1085 340 0 0 {name=l46 lab=COMP}
-N 1190 340 1420 340 {lab=COMP2}
+N 1190 340 1370 340 {lab=COMP2}
 C {lab_wire.sym} 1305 340 0 0 {name=l47 lab=COMP2}
-N 1480 340 1560 340 {lab=VOUT}
 N 1100 340 1100 400 {lab=COMP}
 N 1100 400 1280 400 {lab=COMP}
 N 1370 340 1370 400 {lab=COMP2}
 N 1370 400 1310 400 {lab=COMP2}
 N 1280 440 1280 480 {lab=STBY}
 C {lab_pin.sym} 1280 480 0 1 {name=l48 lab=STBY}
-N 1560 340 1560 220 {lab=VOUT}
-N 1560 220 1640 220 {lab=VOUT}
 C {gf180mcu_fd_pr/nplus_u.sym} 1800 600 0 0 {name=RBLEED W=0.5u L=3590u model=nplus_u spiceprefix=X m=1}
 C {lab_pin.sym} 1780 600 0 0 {name=lrb4 lab=VSS}
-C {gf180mcu_fd_pr/cap_mim_analog.sym} 2000 400 0 0 {name=CGF W=20u L=12.2u model=cap_mim_2f0_m3m4_noshield spiceprefix=X m=40}
-N 2000 340 2000 370 {lab=GATE}
-N 2000 430 2000 460 {lab=VOUT}
 C {gf180mcu_fd_pr/pfet_03v3.sym} 2150 300 3 0 {name=MPPRE model=pfet_03v3 spiceprefix=X W=50u L=0.5u nf=1 m=30 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}
 N 2120 280 2090 280 {lab=VOUT}
 N 2120 280 2150 280 {lab=VOUT}
@@ -172,3 +165,18 @@ N 1800 570 1800 530 {lab=VOUT}
 C {lab_pin.sym} 1800 530 0 0 {name=l34 lab=VOUT}
 N 1800 630 1800 670 {lab=VSS}
 C {lab_pin.sym} 1800 670 0 0 {name=l35 lab=VSS}
+C {ldo_startup.sym} 2600 500 0 0 {name=XCS}
+N 2450 500 2400 500 {lab=VIN}
+C {lab_pin.sym} 2400 500 0 0 {name=lxvin lab=VIN}
+N 2450 530 2400 530 {lab=VSS}
+C {lab_pin.sym} 2400 530 0 0 {name=lxvss lab=VSS}
+N 2450 560 2400 560 {lab=COMP2}
+C {lab_pin.sym} 2400 560 0 0 {name=lxcomp2 lab=COMP2}
+N 2450 590 2400 590 {lab=GATE}
+C {lab_pin.sym} 2400 590 0 0 {name=lxgate lab=GATE}
+N 2750 560 2800 560 {lab=VOUT}
+C {lab_pin.sym} 2800 560 0 1 {name=lxvout lab=VOUT}
+N 2750 590 2800 590 {lab=PGOOD}
+C {lab_pin.sym} 2800 590 0 1 {name=lxpgood lab=PGOOD}
+N 2750 620 2800 620 {lab=ENB}
+C {lab_pin.sym} 2800 620 0 1 {name=lxenb lab=ENB}
