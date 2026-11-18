@@ -28,7 +28,7 @@ C {iopin.sym} 220 0 0 0 {name=p0 lab=VSS}
 C {iopin.sym} 0 130 1 0 {name=p1 lab=ENB}
 C {iopin.sym} -320 0 0 1 {name=p2 lab=VREF}
 C {iopin.sym} -320 40 2 0 {name=p3 lab=VREF_SS}
-C {gf180mcu_fd_pr/ppolyf_u_3k.sym} -250 0 3 0 {name=RSS W=2u L=666.645u model=ppolyf_u_3k spiceprefix=X m=1}
+C {gf180mcu_fd_pr/ppolyf_u_3k.sym} -250 0 3 0 {name=RSS W=0.5u L=154.978u model=ppolyf_u_3k spiceprefix=X m=1}
 C {lab_pin.sym} -250 20 0 0 {name=lrb15 lab=VSS}
 C {gf180mcu_fd_pr/cap_mim_analog.sym} 0 -60 3 0 {name=CSS W=20u L=12.2u model=cap_mim_2f0_m4m5_noshield spiceprefix=X m=40}
 C {gf180mcu_fd_pr/nfet_03v3.sym} 0 80 3 0 {name=MNRESET model=nfet_03v3 spiceprefix=X W=2u L=0.5u nf=1 m=1 ad="'int((nf+1)/2)*W/nf*0.18u'" as="'int((nf+2)/2)*W/nf*0.18u'" pd="'2*int((nf+1)/2)*(W/nf+0.18u)'" ps="'2*int((nf+2)/2)*(W/nf+0.18u)'" nrd="'0.18u/W'" nrs="'0.18u/W'" sa=0 sb=0 sd=0}

@@ -45,7 +45,7 @@ C {lab_pin.sym} 240 220 0 0 {name=lp9 lab=SWGC}
 N 320 250 320 290 {lab=CGFF}
 C {lab_pin.sym} 320 290 0 0 {name=lp10 lab=CGFF}
 
-C {gf180mcu_fd_pr/ppolyf_u_3k.sym} -450 -100 3 0 {name=RSWGC W=2u L=666.645u model=ppolyf_u_3k spiceprefix=X m=1}
+C {gf180mcu_fd_pr/ppolyf_u_3k.sym} -450 -100 3 0 {name=RSWGC W=0.5u L=154.978u model=ppolyf_u_3k spiceprefix=X m=1}
 N -480 -100 -540 -100 {lab=ENB}
 C {lab_pin.sym} -540 -100 0 0 {name=lp11 lab=ENB}
 N -420 -100 -360 -100 {lab=SWGC}
@@ -58,7 +58,7 @@ C {lab_pin.sym} -340 -100 0 0 {name=lp14 lab=SWGC}
 N -220 -100 -160 -100 {lab=VIN}
 C {lab_pin.sym} -160 -100 0 0 {name=lp15 lab=VIN}
 
-C {gf180mcu_fd_pr/ppolyf_u_3k.sym} -450 -180 3 0 {name=RSWGCC W=2u L=666.645u model=ppolyf_u_3k spiceprefix=X m=1}
+C {gf180mcu_fd_pr/ppolyf_u_3k.sym} -450 -180 3 0 {name=RSWGCC W=0.5u L=154.978u model=ppolyf_u_3k spiceprefix=X m=1}
 N -480 -180 -540 -180 {lab=ENB}
 C {lab_pin.sym} -540 -180 0 0 {name=lp26 lab=ENB}
 N -420 -180 -360 -180 {lab=SWGCC}
@@ -93,12 +93,12 @@ N 320 190 320 220 {lab=VOUT}
 C {lab_pin.sym} 320 190 0 0 {name=lp27 lab=VOUT}
 N 320 530 320 500 {lab=VSS}
 C {lab_pin.sym} 320 530 0 0 {name=lp28 lab=VSS}
-C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 700 300 3 0 {name=RBLEDPD1 W=2u L=166.661u model=ppolyf_u_3k spiceprefix=X m=1}
+C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 700 300 3 0 {name=RBLEDPD1 W=0.5u L=38.637u model=ppolyf_u_3k spiceprefix=X m=1}
 N 670 300 620 300 {lab=SWGCC}
 C {lab_pin.sym} 620 300 0 0 {name=lp31 lab=SWGCC}
 N 730 300 780 300 {lab=BLED}
 C {lab_pin.sym} 780 300 0 0 {name=lp32 lab=BLED}
-C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 700 420 3 0 {name=RBLEDPD2 W=2u L=666.645u model=ppolyf_u_3k spiceprefix=X m=1}
+C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 700 420 3 0 {name=RBLEDPD2 W=0.5u L=154.978u model=ppolyf_u_3k spiceprefix=X m=1}
 N 670 420 620 420 {lab=BLED}
 C {lab_pin.sym} 620 420 0 0 {name=lp33 lab=BLED}
 N 730 420 780 420 {lab=VSS}

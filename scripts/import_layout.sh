@@ -28,6 +28,16 @@ MAGICRC=/foss/pdks/gf180mcuD/libs.tech/magic/gf180mcuD.magicrc
 
 rm -rf "$SCRATCH"; mkdir -p "$SCRATCH"
 
+# ppolyf_u_3k has no gencell: pre-seed an empty placeholder cell BEFORE any
+# import so the first block that references it (ldo_softstart/RSS) reads it
+# and places the use line instead of silently dropping the instance.
+cat > "$SCRATCH/ppolyf_u_3k.mag" <<'MEOF'
+magic
+tech gf180mcuD
+timestamp 1795029197
+<< end >>
+MEOF
+
 # 1. netlist
 ( cd "$ROOT/schematics" && xschem -n -q -x -b --rcfile ./xschemrc \
     -o "$SCRATCH" -N ldo_tb.spice ldo_tb.sch )
@@ -82,4 +92,5 @@ for ln in lines:
 dst.write_text(''.join(out))
 PYEOF
 rm -f "$SCRATCH/ldo_tb.spice"
+
 echo "layout baseline refreshed: $(ls "$ROOT/layout"/*.mag | wc -l) .mag files in layout/"

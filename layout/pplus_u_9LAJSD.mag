@@ -1,0 +1,53 @@
+magic
+tech gf180mcuD
+magscale 1 10
+timestamp 1795029291
+<< checkpaint >>
+rect -2286 -88666 2286 88666
+<< nwell >>
+rect -286 -86666 286 86666
+<< pdiff >>
+rect -100 86467 100 86480
+rect -100 86421 -87 86467
+rect 87 86421 100 86467
+rect -100 86354 100 86421
+rect -100 -86421 100 -86354
+rect -100 -86467 -87 -86421
+rect 87 -86467 100 -86421
+rect -100 -86480 100 -86467
+<< pdiffc >>
+rect -87 86421 87 86467
+rect -87 -86467 87 -86421
+<< nsubdiff >>
+rect -262 86570 262 86642
+rect -262 86526 -190 86570
+rect -262 -86526 -249 86526
+rect -203 -86526 -190 86526
+rect 190 86526 262 86570
+rect -262 -86570 -190 -86526
+rect 190 -86526 203 86526
+rect 249 -86526 262 86526
+rect 190 -86570 262 -86526
+rect -262 -86642 262 -86570
+<< nsubdiffcont >>
+rect -249 -86526 -203 86526
+rect 203 -86526 249 86526
+<< pdiffres >>
+rect -100 -86354 100 86354
+<< metal1 >>
+rect -249 86583 249 86629
+rect -249 86526 -203 86583
+rect 203 86526 249 86583
+rect -98 86421 -87 86467
+rect 87 86421 98 86467
+rect -98 -86467 -87 -86421
+rect 87 -86467 98 -86421
+rect -249 -86583 -203 -86526
+rect 203 -86583 249 -86526
+rect -249 -86629 249 -86583
+<< properties >>
+string FIXED_BBOX -226 -86606 226 86606
+string gencell pplus_u
+string library gf180mcu
+string parameters w 1.00 l 863.541 m 1 nx 1 wmin 1.00 lmin 1.00 class resistor rho 128 val 223.525k dummy 0 dw 0.0055 term 0.0 sterm 0.0 caplen 0.60 snake 0 guard 1 glc 1 grc 1 gtc 0 gbc 0 roverlap 0 endcov 100 full_metal 1
+<< end >>

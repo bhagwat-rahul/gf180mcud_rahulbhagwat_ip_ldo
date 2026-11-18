@@ -271,9 +271,12 @@ The final design uses GF180MCU-D poly resistors and MIM capacitors throughout
 variant — only the metal pair changed so Magic's gencell/extraction/LVS all
 agree). The startup block is `schematics/ldo_startup.sch`, the on-die load is
 `schematics/load/ldo_load.sch` with a PGOOD/STBY-sequenced enable, and the
-latest full matrix is `.amp/in/single-loop/pdk-fix8/` (electrically
-bit-identical to `pdk-fix7`; the only change is the cap metal pair), generated
-from the current sheets. A hierarchical Magic
+latest full matrix is `.amp/in/single-loop/pdk-fix9/` (short-resistor
+re-targeting: `RBLEED` moved to `pplus_u` 360 k at W=0.5/864 um with its
+n-well body on VIN — same positive TC as n+, so the cold-heavy/hot-light
+bleed corners are preserved — and the seven 3k RC resistors went to W=0.5
+with `RHYS`/`RLOW`/`RTH` at W=1.0; all re-lengthed with the PDK edge
+corrections so nominal values are unchanged). A hierarchical Magic
 baseline lives in `layout/` (see `layout/README.md` and
 `scripts/import_layout.sh`).
 

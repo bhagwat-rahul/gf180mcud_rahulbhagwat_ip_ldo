@@ -17,7 +17,7 @@ XBIAS VIN VSS IBIAS EN STBY GATE ENB PB ldo_bias
 XPG VIN VSS PB EN ENB VREF VFB PGOOD ldo_pgood
 XRTOP VFB VOUT VSS ppolyf_u_3k r_width=2u r_length=399.978u
 XRBOT VSS VFB VSS ppolyf_u_3k r_width=2u r_length=799.978u
-XRBLEED VSS VOUT VSS nplus_u r_width=0.5u r_length=3590u
+XRBLEED VSS VOUT VIN pplus_u r_width=0.5u r_length=863.541u
 XCFF VOUT VFB cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=2
 XRZERO COMP GATE VSS ppolyf_u r_width=20u r_length=22.514u
 XRZB COMP2 COMP VSS nplus_u r_width=0.5u r_length=179.5u
@@ -28,7 +28,7 @@ XMPPRE PRE PREG VOUT VOUT pfet_03v3 L=0.5u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.1
 XRPRE VSS PRE VSS ppolyf_u r_width=200u r_length=68.229u
 XMPDIO PREG PREG STBY VIN pfet_03v3 L=1u W=10u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
 + ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
-XRPRE_D VSS PREG VSS ppolyf_u_3k r_width=2u r_length=666.645u
+XRPRE_D VSS PREG VSS ppolyf_u_3k r_width=0.5u r_length=154.978u
 XCPRE_D PREG VSS cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=12
 XCS VIN VSS COMP2 GATE VOUT PGOOD ENB ldo_startup
 XLOAD VIN VSS VREF LDENB PGOOD STBY VOUT ldo_load
@@ -38,7 +38,7 @@ XLOAD VIN VSS VREF LDENB PGOOD STBY VOUT ldo_load
 *.iopin ENB
 *.iopin VREF
 *.iopin VREF_SS
-XRSS VREF_SS VREF VSS ppolyf_u_3k r_width=2u r_length=666.645u
+XRSS VREF_SS VREF VSS ppolyf_u_3k r_width=0.5u r_length=154.978u
 XCSS VREF_SS VSS cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=40
 XMNRESET VREF_SS ENB VSS VSS nfet_03v3 L=0.5u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
 + ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
@@ -62,7 +62,7 @@ XMPBOOST RUN_BIAS PB VP VIN pfet_03v3 L=2u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.1
 + ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=2
 XMPMODE NB MODEG RUN_BIAS VIN pfet_03v3 L=0.5u W=40u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
 + ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
-XRMODE_D MODEG STBY VSS ppolyf_u_3k r_width=2u r_length=666.645u
+XRMODE_D MODEG STBY VSS ppolyf_u_3k r_width=0.5u r_length=154.978u
 XCMODE_D MODEG VSS cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=10
 XMPLA A CMAVG VP VIN pfet_03v3 L=0.5u W=20u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
 + ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
@@ -159,9 +159,9 @@ XMNBUF PGOOD RAW VSS VSS nfet_03v3 L=0.5u W=1u nf=1 ad='int((nf+1)/2)*W/nf*0.18u
 + ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
 XMPOFF RAW EN VIN VIN pfet_03v3 L=0.5u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
 + ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
-XRTH THRESH VREF VSS ppolyf_u_3k r_width=2u r_length=133.311u
-XRLOW VSS THRESH VSS ppolyf_u_3k r_width=2u r_length=1199.978u
-XRHYS HYS THRESH VSS ppolyf_u_3k r_width=2u r_length=2039.978u
+XRTH THRESH VREF VSS ppolyf_u_3k r_width=1u r_length=65.022u
+XRLOW VSS THRESH VSS ppolyf_u_3k r_width=1u r_length=586.046u
+XRHYS HYS THRESH VSS ppolyf_u_3k r_width=1u r_length=996.352u
 XMNHYS HYS PGOOD VSS VSS nfet_03v3 L=0.5u W=2u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
 + ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
 .ends
@@ -179,15 +179,15 @@ XMPCC CCF SWGCC VOUT VOUT pfet_03v3 L=0.28u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.
 + ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=10
 XMPCG CGFF SWGC VOUT VOUT pfet_03v3 L=0.28u W=50u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
 + ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0 m=4
-XRSWGC SWGC ENB VSS ppolyf_u_3k r_width=2u r_length=666.645u
+XRSWGC SWGC ENB VSS ppolyf_u_3k r_width=0.5u r_length=154.978u
 XCSWGC SWGC VIN cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=62
-XRSWGCC SWGCC ENB VSS ppolyf_u_3k r_width=2u r_length=666.645u
+XRSWGCC SWGCC ENB VSS ppolyf_u_3k r_width=0.5u r_length=154.978u
 XCSWGCC SWGCC VIN cap_mim_2f0_m4m5_noshield c_width=20u c_length=12.2u m=205
 XRBLD BLD VOUT VSS ppolyf_u r_width=10u r_length=57.143u
 XMNBLD BLD BLED VSS VSS nfet_03v3 L=0.5u W=10u nf=1 ad='int((nf+1)/2)*W/nf*0.18u' as='int((nf+2)/2)*W/nf*0.18u' pd='2*int((nf+1)/2)*(W/nf+0.18u)'
 + ps='2*int((nf+2)/2)*(W/nf+0.18u)' nrd='0.18u/W' nrs='0.18u/W' sa=0 sb=0 sd=0
-XRBLEDPD1 BLED SWGCC VSS ppolyf_u_3k r_width=2u r_length=166.661u
-XRBLEDPD2 VSS BLED VSS ppolyf_u_3k r_width=2u r_length=666.645u
+XRBLEDPD1 BLED SWGCC VSS ppolyf_u_3k r_width=0.5u r_length=38.637u
+XRBLEDPD2 VSS BLED VSS ppolyf_u_3k r_width=0.5u r_length=154.978u
 .ends
 .subckt ldo_load VIN VSS VLOAD LDENB PGOOD STBY VOUT
 *.iopin VIN
