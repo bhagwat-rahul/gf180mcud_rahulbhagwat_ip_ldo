@@ -120,7 +120,7 @@ def main():
     wire(c, 'metal3', (1192.0, 320.0), (1178.55, 320.0))
     wire(c, 'metal3', (1178.55, 320.0), (1178.55, 325.0))
     m1(1178.55, 325.0)
-    wire(c, 'metal3', (1185.0, 320.0), (1185.0, 316.65))
+    wire(c, 'metal3', (1180.5, 320.0), (1180.5, 316.65))
     c.label('metal3', 1189.0, -10.6, 1190.0, -9.6, 'VSS', port='VSS')
 
     # VOUT: S buses -> metal3 x=1145 -> metal2 up to 365 -> RBLD left pad
