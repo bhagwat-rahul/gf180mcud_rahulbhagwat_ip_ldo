@@ -26,11 +26,20 @@
 run along the S/D bus row), single separated metal2 drops, VSS label on
 the guard-ring tie.  DRC 0 / LVS PASS / antenna 0 / PEX PASS / GDS PASS.
 
+## In progress: ldo_load (WIP, not a done block)
+`layout/ldo_load.mag` + `scripts/build_load.py`:
+- 13 small devices in one row (metal3 tracks y=8..17), XMIR 210-finger
+  array, XMNSW 8-finger array, XMREF 1-finger array, XRSET, 205-unit cap.
+- **KLayout DRC: 0 markers**, 18/18 devices extracted.
+- LVS still fails: 13 layout nets vs 15 reference (two net merges).  The
+  row tracks, IREF lane (x=88) and VSS lane (x=89.5) are verified; the
+  remaining problem is the metal2 lane -> metal3 hop handoff for
+  LDB/ISET and the net1/net2 bulk returns (last edit added the missing
+  via2 at the LDB hop and changed the merge count, so this is an
+  incremental connectivity fix, not a structural problem).
+
 ## Remaining (4 blocks + top)
-- `ldo_load` (18 devices; 210-finger XMIR array, 205-unit cap, 13 small
-  devices).  Use a single row for the small devices (track router above
-  the row) instead of a 2D grid; place the cap and XMIR array beside it.
-  Watch the XMIR gate stub crossing the row cells' metal2 gate pads.
+- `ldo_load`: finish LVS connectivity (see above), then commit.
 - `ldo_error_amp` (20 devices; needs new sizes p50/0.5, p50/2, n16/2,
   p40/0.5, p20/0.5, n40/0.5, n32/2, p40/1, n40/1, R 222.66/1, caps
   10+20 units).  Single-row track router applies.
