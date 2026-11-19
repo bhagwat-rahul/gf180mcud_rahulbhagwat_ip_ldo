@@ -40,6 +40,13 @@ the guard-ring tie.  DRC 0 / LVS PASS / antenna 0 / PEX PASS / GDS PASS.
   still shows bulk=source for those three; **PVT re-certification with
   bulk=VSS is still outstanding**.
 
+## ldo_error_amp -- CLEAN (6th block)
+`layout/ldo_error_amp.mag` + `scripts/build_amp.py`: 14 arrays (with the
+schematic m multipliers folded in as extra fingers), 4 resistors, two
+MIM arrays.  DRC 0, LVS PASS (57 statements), antenna 0, PEX PASS,
+GDS PASS.  All device bulks are VIN/VSS (process-legal; no isolation
+needed in this block).
+
 ## Remaining (4 blocks + top)
 - `ldo_load`: finish LVS connectivity (see above), then commit.
 - `ldo_error_amp` (20 devices; needs new sizes p50/0.5, p50/2, n16/2,
