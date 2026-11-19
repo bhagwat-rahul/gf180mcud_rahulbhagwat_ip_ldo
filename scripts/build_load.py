@@ -57,9 +57,9 @@ ROW = [
     ('XMP3', 'pfet_03v3_w4_l05', 63.0,
      {'L': 'VIN', 'R': 'LOAD_DIS', 'G': 'LDENB_B', 'B': 'VIN'}),
     ('XMN1', 'nfet_03v3_w4_l05', 70.0,
-     {'L': 'net1', 'R': 'LOAD_DIS', 'G': 'PGOOD', 'B': 'net1'}),
+     {'L': 'net1', 'R': 'LOAD_DIS', 'G': 'PGOOD', 'B': 'VSS'}),
     ('XMN2', 'nfet_03v3_w4_l05', 77.0,
-     {'L': 'net2', 'R': 'net1', 'G': 'STBYB', 'B': 'net2'}),
+     {'L': 'net2', 'R': 'net1', 'G': 'STBYB', 'B': 'VSS'}),
     ('XMN3', 'nfet_03v3_w4_l05', 84.0,
      {'L': 'VSS', 'R': 'net2', 'G': 'LDENB_B', 'B': 'VSS'}),
 ]

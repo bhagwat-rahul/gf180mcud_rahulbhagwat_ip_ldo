@@ -26,17 +26,24 @@
 run along the S/D bus row), single separated metal2 drops, VSS label on
 the guard-ring tie.  DRC 0 / LVS PASS / antenna 0 / PEX PASS / GDS PASS.
 
-## In progress: ldo_load (WIP, not a done block)
+## ldo_load: routing complete, blocked on isolated pwells
 `layout/ldo_load.mag` + `scripts/build_load.py`:
 - 13 small devices in one row (metal3 tracks y=8..17), XMIR 210-finger
   array, XMNSW 8-finger array, XMREF 1-finger array, XRSET, 205-unit cap.
-- **KLayout DRC: 0 markers**, 18/18 devices extracted.
-- LVS still fails: 13 layout nets vs 15 reference (two net merges).  The
-  row tracks, IREF lane (x=88) and VSS lane (x=89.5) are verified; the
-  remaining problem is the metal2 lane -> metal3 hop handoff for
-  LDB/ISET and the net1/net2 bulk returns (last edit added the missing
-  via2 at the LDB hop and changed the merge count, so this is an
-  incremental connectivity fix, not a structural problem).
+- **KLayout DRC 0, 18/18 devices, 15/15 nets.**  Every source, drain,
+  gate and array connection now matches the reference.  The only
+  remaining LVS difference is the bulk pin of XMN1 and XMN2: the
+  reference ties them to net1/net2, but in this p-substrate flow every
+  nfet pwell is the global substrate, so the bulk pad is VSS.  Tying the
+  pad to net1/net2 (the original routing) shorted those nets to VSS;
+  tying it to VSS (current diagnostic build) leaves two bulk-pin
+  mismatches.
+- Fix: give XMN1 and XMN2 **deep-n-well isolated pwells** (dnwell under
+  each cell, dnwell n-tap to VIN, p-tap to net1/net2) so their bulks can
+  follow the sources.  Alternative: change those two bulks to VSS in the
+  schematic and re-certify the body-effect shift.  Recommend dnwell to
+  preserve the certified netlist.
+- The block must not be committed as "clean" until this is resolved.
 
 ## Remaining (4 blocks + top)
 - `ldo_load`: finish LVS connectivity (see above), then commit.
