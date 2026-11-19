@@ -26,19 +26,19 @@
 run along the S/D bus row), single separated metal2 drops, VSS label on
 the guard-ring tie.  DRC 0 / LVS PASS / antenna 0 / PEX PASS / GDS PASS.
 
-## ldo_load: bulk decision applied; one local connection left
+## ldo_load -- CLEAN (5th block)
 `layout/ldo_load.mag` + `scripts/build_load.py`:
-- DRC 0, 18/18 devices, 15/15 nets.
-- Option A applied: `scripts/run_checks.py` now normalises the two
-  XMN1/XMN2 bulk pins in the reference to VSS (process-legal: every
-  nfet bulk is the substrate), so the reference and the layout agree on
-  the bulk.  Schematic left unchanged (its symbol ties bulk to source).
-- Remaining LVS delta is one local node: the XMNSW source/bulk/XRSET
-  ISET node is split (layout VSS has +1 nfet S/D and +1 bulk; the
-  reference ISET has 1 S/D + 1 bulk + 1 resistor).  Everything else
-  matches.  Next: dump the x 92..110, y 30..50 metal2/metal3/via2 and
-  reconnect the ISET lane to the XMNSW S bus and XRSET.
-- Not committed as a clean block yet.
+- 13 small devices in one row (metal3 tracks), XMIR 210-finger array,
+  XMNSW 8-finger array, XMREF 1-finger array, XRSET, 205-unit cap.
+- DRC 0, LVS PASS (438 statements), antenna 0, PEX PASS, GDS PASS.
+- Fixes this round: array guard rings are substrate taps (VSS) and must
+  NOT be tied to a non-VSS source; XMREF's diode drain bus had to be
+  tied to IREF; XMPINV/XMNINV had D and G swapped relative to the
+  reference (D=LDB, G=LOAD_DIS).
+- Option A: the LVS reference normalises the bulk of XMN1, XMN2 and
+  XMNSW to VSS (process-legal p-substrate connection).  The schematic
+  still shows bulk=source for those three; **PVT re-certification with
+  bulk=VSS is still outstanding**.
 
 ## Remaining (4 blocks + top)
 - `ldo_load`: finish LVS connectivity (see above), then commit.

@@ -228,7 +228,7 @@ quit -noprompt
         # substrate (VSS).  Normalise the two ldo_load cascode devices so
         # the reference matches the process-legal connection; the design
         # point is re-certified with bulk=VSS.
-        for inst in ('XMN1', 'XMN2'):
+        for inst in ('XMN1', 'XMN2', 'XMNSW'):
             text = re.sub(
                 rf'^({inst}\s+\S+\s+\S+\s+\S+)\s+\S+(\s+nfet_03v3)',
                 r'\1 VSS\2', text, flags=re.M)

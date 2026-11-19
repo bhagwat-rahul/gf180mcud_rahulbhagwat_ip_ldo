@@ -37,9 +37,9 @@ LAYOUT = ROOT / 'layout'
 # (inst, cell, x, {terminal: net})
 ROW = [
     ('XMPINV', 'pfet_03v3_w2_l05', 0.0,
-     {'L': 'VIN', 'R': 'LOAD_DIS', 'G': 'LDB', 'B': 'VIN'}),
+     {'L': 'VIN', 'R': 'LDB', 'G': 'LOAD_DIS', 'B': 'VIN'}),
     ('XMNINV', 'nfet_03v3_w1_l05', 7.0,
-     {'L': 'VSS', 'R': 'LOAD_DIS', 'G': 'LDB', 'B': 'VSS'}),
+     {'L': 'VSS', 'R': 'LDB', 'G': 'LOAD_DIS', 'B': 'VSS'}),
     ('XMNCL', 'nfet_03v3_w2_l05', 14.0,
      {'L': 'VSS', 'R': 'IREF', 'G': 'LOAD_DIS', 'B': 'VSS'}),
     ('XMPSTB', 'pfet_03v3_w2_l05', 21.0,
@@ -137,12 +137,14 @@ def main():
     c.label('metal3', -6.0, yvss - 0.5, -4.8, yvss + 0.5, 'VSS', port='VSS')
 
     # ---- wide-device bulk ties (ring -> own S bus) -------------------
+    # Array guard rings are substrate taps (VSS), not source ties: route
+    # them to the VSS lane at y=28.5, clear of every array S/D bus.
     for p in (MRI, MSW, MRF):
         via(c, *p['B'], 'metal1', 'metal2')
-        wire(c, 'metal2', p['B'], (p['B'][0], p['S'][1]))
-        via(c, p['B'][0], p['S'][1], 'metal2', 'metal3', enc=0.07)
-        wire(c, 'metal3', (p['B'][0], p['S'][1]),
-             (p['S'][0] + 0.9, p['S'][1]))
+        wire(c, 'metal2', p['B'], (p['B'][0], 28.5))
+        via(c, p['B'][0], 28.5, 'metal2', 'metal3', enc=0.07)
+    wire(c, 'metal3', (LANE['VSS'], 28.5), (MRF['B'][0], 28.5))
+    via(c, LANE['VSS'], 28.5, 'metal2', 'metal3', enc=0.07)
 
     # ---- IREF lane: row track -> XMIR gate -> XMREF gate -> XRSET ->
     #      cap top.  Lane is metal2 at x=88; hop to metal3 at each target.
@@ -152,6 +154,10 @@ def main():
     via(c, LANE['IREF'], MRI['G'][1], 'metal2', 'metal3')
     wire(c, 'metal3', (LANE['IREF'], MRI['G'][1]), (MRI['G'][0], MRI['G'][1]))
     via(c, *MRI['G'], 'metal2', 'metal3')
+    # XMREF drain (= gate, IREF): the lower bus was left floating
+    via(c, LANE['IREF'], 29.5, 'metal2', 'metal3')
+    wire(c, 'metal3', (LANE['IREF'], 29.5), (120.0, 29.5))
+    wire(c, 'metal3', (120.0, 29.5), (120.0, MRF['D'][1]))
     # XMREF gate (approach at y=83 so the hop clears the XMNSW gate pad)
     via(c, LANE['IREF'], 83.0, 'metal2', 'metal3')
     wire(c, 'metal3', (LANE['IREF'], 83.0), (MRF['G'][0], 83.0))
