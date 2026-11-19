@@ -262,6 +262,11 @@ gencell {gencell_proc} T1 w {w} l {l} nf 1''',
 
 
 TRANSISTORS = {
+    # ldo_pgood / ldo_load
+    'pfet_03v3_w8_l05':   ('pfet_03v3', 8.0, 0.5, 'gf180mcu::pfet_03v3'),
+    'nfet_03v3_w8_l1':    ('nfet_03v3', 8.0, 1.0, 'gf180mcu::nfet_03v3'),
+    'pfet_03v3_w2_l2':    ('pfet_03v3', 2.0, 2.0, 'gf180mcu::pfet_03v3'),
+    'nfet_03v3_w2_l05':   ('nfet_03v3', 2.0, 0.5, 'gf180mcu::nfet_03v3'),
     # ldo_bias
     'nfet_03v3_w2_l2':   ('nfet_03v3', 2.0, 2.0, 'gf180mcu::nfet_03v3'),
     'nfet_03v3_w1_l05':  ('nfet_03v3', 1.0, 0.5, 'gf180mcu::nfet_03v3'),
