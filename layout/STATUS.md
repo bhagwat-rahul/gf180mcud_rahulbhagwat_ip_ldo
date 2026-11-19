@@ -26,12 +26,18 @@
 run along the S/D bus row), single separated metal2 drops, VSS label on
 the guard-ring tie.  DRC 0 / LVS PASS / antenna 0 / PEX PASS / GDS PASS.
 
-## Remaining
-- `ldo_load` (18 devices; 210-finger array, 205-unit cap, 2D small-device
-  grid needs per-row routing channels), `ldo_error_amp` (20 devices),
-  `ldo_startup` (12 devices, 80 x 50x50 + 205/62/40-unit cap arrays),
-  `ldo_top` (99 instances).
-- Top-level assembly and slot fit.
+## Remaining (4 blocks + top)
+- `ldo_load` (18 devices; 210-finger XMIR array, 205-unit cap, 13 small
+  devices).  Use a single row for the small devices (track router above
+  the row) instead of a 2D grid; place the cap and XMIR array beside it.
+  Watch the XMIR gate stub crossing the row cells' metal2 gate pads.
+- `ldo_error_amp` (20 devices; needs new sizes p50/0.5, p50/2, n16/2,
+  p40/0.5, p20/0.5, n40/0.5, n32/2, p40/1, n40/1, R 222.66/1, caps
+  10+20 units).  Single-row track router applies.
+- `ldo_startup` (12 devices; 80 x 50x50 cap units + 205/62/40-unit
+  20x12.2 arrays + 996/257/64/57 um resistors).  Needs a 50x50-unit MIM
+  array generator; the 20x12.2 `cap_array` is reusable.
+- `ldo_top` (99 instances) and full-chip slot assembly.
 
 ## Area budget warning
 Reference MIM plate area: softstart 9.8k, load 50k, startup 275k um^2
