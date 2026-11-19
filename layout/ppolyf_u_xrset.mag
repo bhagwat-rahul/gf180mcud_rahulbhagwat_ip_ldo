@@ -1,0 +1,19 @@
+magic
+tech gf180mcuD
+magscale 1 10
+timestamp 1795128794
+<< ppolyres >>
+rect -2000 -1966 2000 1966
+<< polysilicon >>
+rect -2000 1966 2000 2068
+rect -2000 -2068 2000 -1966
+<< polycontact >>
+rect -22 1998 22 2044
+rect -22 -2044 22 -1998
+<< metal1 >>
+rect -2030 1956 2030 2086
+rect -2030 -2086 2030 -1956
+<< pwell >>
+rect -2140 -2208 2140 2208
+<< properties >>
+<< end >>

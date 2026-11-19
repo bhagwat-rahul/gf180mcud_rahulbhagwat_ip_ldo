@@ -82,7 +82,7 @@ gencell gf180mcu::cap_mim_2p0fF C1 w {width} l {length} nx 1 ny 1''',
     print(f'wrote {out.relative_to(ROOT)}')
 
 
-def cap_array(nx, ny, pitch_x=25.0, pitch_y=15.5, name='cap_mim_array'):
+def cap_array(nx, ny, pitch_x=25.0, pitch_y=15.5, name='cap_mim_array', count=None):
     """2D MIM array with MIMTM.1-compliant pitch.
 
     Top plates are strapped by one vertical metal5 stub per column through
@@ -95,9 +95,11 @@ def cap_array(nx, ny, pitch_x=25.0, pitch_y=15.5, name='cap_mim_array'):
     if not unit.is_file():
         make_unit_cap()
     c = Canvas(library_dir=str(LAYOUT))
-    for j in range(ny):
-        for i in range(nx):
-            c.flatten('cap_mim_2p0fF_unit', i * pitch_x, j * pitch_y)
+    total = nx * ny if count is None else count
+    for idx in range(total):
+        j, i = divmod(idx, nx)
+        c.flatten('cap_mim_2p0fF_unit', i * pitch_x, j * pitch_y)
+    ny = (total - 1) // nx + 1
     y_hi = (ny - 1) * pitch_y
     # top plates: vertical stub at each column centre through the pads,
     # then a bus above the array
@@ -122,7 +124,7 @@ def cap_array(nx, ny, pitch_x=25.0, pitch_y=15.5, name='cap_mim_array'):
     c.rect('metal5', -8.0, y_hi + 10.1, -0.3, y_hi + 10.9)
     c.rect('metal5', -8.0, -10.9, 10.97, -10.1)
     c.write(str(LAYOUT / f'{name}.mag'))
-    print(f'wrote layout/{name}.mag  ({nx} x {ny} units, pitch {pitch_x} x {pitch_y})')
+    print(f'wrote layout/{name}.mag  ({total} units in {nx} columns, pitch {pitch_x} x {pitch_y})')
 
 
 def nfet_wide():
@@ -261,12 +263,88 @@ gencell {gencell_proc} T1 w {w} l {l} nf 1''',
     print(f'wrote layout/{name}.mag  ({model} w={w} l={l})')
 
 
+def array_fet(model, w, l, n, name):
+    """Interdigitated MOSFET array: n fingers of width w, length l.
+
+    Diff is one continuous strip; each gate is a poly stripe with its own
+    contact at the top and a metal1 rail joining all gates.  S/D contact
+    columns are strapped on metal1 and drop to metal3 source/drain buses
+    below the array.  A U-shaped guard ring (top/left/right) is the bulk
+    terminal.  Extraction yields n devices of W=w, L=l which netgen merges
+    in parallel.
+    """
+    pfet = model.startswith('pfet')
+    diff = 'pdiff' if pfet else 'ndiff'
+    diffc = 'pdiffc' if pfet else 'ndiffc'
+    marker = 'pmos' if pfet else 'nmos'
+    well = 'nwell' if pfet else 'pwell'
+    ring = 'nsubdiff' if pfet else 'psubdiff'
+    ringc = 'nsubdiffcont' if pfet else 'psubdiffcont'
+    P = l + 0.64
+    hw = w / 2.0
+    xl = -0.32 - 0.23              # diff left edge
+    xr = (n - 1) * P + l + 0.32 + 0.23   # diff right edge
+    c = Canvas(library_dir=str(LAYOUT))
+    # well and guard ring (U shape: left, right, top; bottom is open so the
+    # S/D drops can leave the array)
+    c.rect(well, xl - 1.2, -hw - 2.2, xr + 1.2, hw + 2.2)
+    for x0, x1 in ((xl - 0.95, xl - 0.50), (xr + 0.50, xr + 0.95)):
+        c.rect(ring, x0, -hw - 1.9, x1, hw + 1.9)
+        c.rect(ringc, (x0 + x1) / 2.0 - 0.11, -hw - 1.4,
+               (x0 + x1) / 2.0 + 0.11, hw + 1.4)
+        c.rect('metal1', x0 - 0.06, -hw - 1.6, x1 + 0.06, hw + 1.6)
+    c.rect(ring, xl - 0.95, hw + 1.4, xr + 0.95, hw + 1.85)
+    c.rect(ringc, xl - 0.70, hw + 1.51, xr + 0.70, hw + 1.73)
+    c.rect('metal1', xl - 1.01, hw + 1.34, xr + 1.01, hw + 1.91)
+    # diff and S/D contact columns
+    c.rect(diff, xl, -hw, xr, hw)
+    for k in range(n + 1):
+        x0 = (k - 1) * P + l + 0.32
+        c.rect(diffc, x0 - 0.11, -hw + 0.30, x0 + 0.11, hw - 0.30)
+        c.rect('metal1', x0 - 0.17, -hw - 0.02, x0 + 0.17, hw - 0.24)
+        # drop to a via row below the array (source even, drain odd)
+        yend = -hw - (1.55 if k % 2 == 0 else 2.75)
+        c.rect('metal1', x0 - 0.17, yend, x0 + 0.17, -hw + 0.05)
+        c.rect('metal1', x0 - 0.18, yend - 0.02, x0 + 0.18, yend + 0.34)
+        c.rect('via1', x0 - 0.13, yend + 0.07, x0 + 0.13, yend + 0.27)
+        c.rect('metal2', x0 - 0.18, yend + 0.02, x0 + 0.18, yend + 0.32)
+    # gates: poly stripe, contact, pad, rail
+    for i in range(n):
+        x0 = i * P
+        c.rect(marker, x0, -hw, x0 + l, hw)
+        c.rect('polysilicon', x0, -hw - 0.46, x0 + l, hw + 0.46)
+        cx = x0 + l / 2.0
+        c.rect('polycontact', cx - 0.11, hw + 0.16, cx + 0.11, hw + 0.38)
+        c.rect('metal1', cx - 0.17, hw + 0.05, cx + 0.17, hw + 0.65)
+    c.rect('metal1', xl - 0.2, hw + 0.65, xr + 0.2, hw + 1.05)
+    # metal2/metal3 buses
+    ys, yd = -hw - 3.6, -hw - 4.8
+    for k in range(n + 1):
+        x0 = (k - 1) * P + l + 0.32
+        yvia = -hw - (1.55 if k % 2 == 0 else 2.75)
+        ybus = ys if k % 2 == 0 else yd
+        c.rect('metal2', x0 - 0.18, min(ybus, yvia), x0 + 0.18,
+               max(ybus, yvia) + 0.32)
+        c.rect('via2', x0 - 0.13, ybus, x0 + 0.13, ybus + 0.26)
+        c.rect('metal3', x0 - 0.18, ybus, x0 + 0.18, ybus + 0.36)
+    c.rect('metal3', xl - 0.4, ys, xr + 0.4, ys + 0.5)
+    c.rect('metal3', xl - 0.4, yd, xr + 0.4, yd + 0.5)
+    # gate port: via1 + metal2 pad on the rail (left end)
+    c.rect('via1', xl - 0.13, hw + 0.77, xl + 0.13, hw + 0.97)
+    c.rect('metal2', xl - 0.21, hw + 0.69, xl + 0.21, hw + 1.05)
+    c.write(str(LAYOUT / f'{name}.mag'))
+    print(f'wrote layout/{name}.mag  ({model} w={w} l={l} n={n})')
+
+
+ARRAYS = []
+
 TRANSISTORS = {
     # ldo_pgood / ldo_load
     'pfet_03v3_w8_l05':   ('pfet_03v3', 8.0, 0.5, 'gf180mcu::pfet_03v3'),
     'nfet_03v3_w8_l1':    ('nfet_03v3', 8.0, 1.0, 'gf180mcu::nfet_03v3'),
     'pfet_03v3_w2_l2':    ('pfet_03v3', 2.0, 2.0, 'gf180mcu::pfet_03v3'),
     'nfet_03v3_w2_l05':   ('nfet_03v3', 2.0, 0.5, 'gf180mcu::nfet_03v3'),
+    'nfet_03v3_w4_l05':   ('nfet_03v3', 4.0, 0.5, 'gf180mcu::nfet_03v3'),
     # ldo_bias
     'nfet_03v3_w2_l2':   ('nfet_03v3', 2.0, 2.0, 'gf180mcu::nfet_03v3'),
     'nfet_03v3_w1_l05':  ('nfet_03v3', 1.0, 0.5, 'gf180mcu::nfet_03v3'),
@@ -293,6 +371,11 @@ def main(names):
     for cellname, (model, w, l, proc) in TRANSISTORS.items():
         if not names or cellname in names:
             transistor_cell(model, w, l, cellname, 't_' + cellname, proc)
+    import json
+    for spec in ARRAYS:
+        if not names or spec['name'] in names:
+            array_fet(spec['model'], spec['w'], spec['l'], spec['n'],
+                      spec['name'])
 
 
 if __name__ == '__main__':
