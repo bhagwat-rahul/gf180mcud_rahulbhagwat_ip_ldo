@@ -51,7 +51,7 @@ N 220 430 265 430 {lab=VIN}
 C {lab_pin.sym} 265 430 0 1 {name=l11 lab=VIN}
 N 180 430 135 430 {lab=MODEG}
 C {lab_pin.sym} 135 430 0 0 {name=l12 lab=MODEG}
-C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 300 620 3 0 {name=RMODE_D W=0.5u L=154.978u model=ppolyf_u_3k spiceprefix=X m=1}
+C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 300 620 3 0 {name=RMODE_D W=0.8u L=257.311u model=ppolyf_u_3k spiceprefix=X m=1}
 C {lab_pin.sym} 300 640 0 0 {name=lrb7 lab=VSS}
 C {gf180mcu_fd_pr/cap_mim_analog.sym} 400 620 0 0 {name=CMODE_D W=20u L=12.2u model=cap_mim_2f0_m4m5_noshield spiceprefix=X m=10}
 N 180 430 180 590 {lab=MODEG}

@@ -81,7 +81,7 @@ N 2380 330 2420 330 {lab=PREG}
 N 2420 330 2450 330 {lab=PREG}
 N 2420 270 2450 270 {lab=STBY}
 N 2420 300 2450 300 {lab=VIN}
-C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 2600 370 0 0 {name=RPRE_D W=0.5u L=154.978u model=ppolyf_u_3k spiceprefix=X m=1}
+C {gf180mcu_fd_pr/ppolyf_u_3k.sym} 2600 370 0 0 {name=RPRE_D W=0.8u L=257.311u model=ppolyf_u_3k spiceprefix=X m=1}
 C {lab_pin.sym} 2580 370 0 0 {name=lrb6 lab=VSS}
 N 2600 340 2600 320 {lab=PREG}
 N 2600 400 2600 420 {lab=VSS}

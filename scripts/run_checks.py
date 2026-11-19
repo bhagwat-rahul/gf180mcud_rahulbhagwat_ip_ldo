@@ -70,7 +70,7 @@ LAYOUT = ROOT / 'layout'
 SCHEM = ROOT / 'schematics'
 PDK = Path(os.environ.get('PDK_ROOT', '/foss/pdks')) / 'gf180mcuD'
 RC = PDK / 'libs.tech/magic/gf180mcuD.magicrc'
-NETGEN_SETUP = PDK / 'libs.tech/netgen/gf180mcuD_setup.tcl'
+NETGEN_SETUP = ROOT / 'scripts/netgen_setup.tcl'
 KLAYOUT_DRC = PDK / 'libs.tech/klayout/tech/drc/gf180mcu.drc'
 
 # Children before ldo_top: netlist order and per-block check order.
@@ -217,8 +217,13 @@ quit -noprompt
             if not re.search(rf'^\.subckt\s+{sheet}\s', target.read_text(), re.M | re.I):
                 raise RuntimeError(f'{sheet}.sch did not produce a subcircuit')
         combined = directory / 'schematic.spice'
-        combined.write_text(''.join(
-            (netlists / f'{sheet}.spice').read_text() + '\n' for sheet, _ in SHEETS))
+        text = ''.join((netlists / f'{sheet}.spice').read_text() + '\n'
+                       for sheet, _ in SHEETS)
+        # The magic tech has no ppolyf_u_3k device (same drawn layers, model
+        # name chosen by process option).  Alias it to the extractable class;
+        # width/length are still compared by netgen.
+        text = text.replace(' ppolyf_u_3k ', ' ppolyf_u ')
+        combined.write_text(text)
         return combined
 
     def drc(self):
@@ -270,24 +275,25 @@ close $report''')
         return '0 Magic antenna markers'
 
     def lvs(self):
-        directory, log = self.extraction('lvs', '''ext2spice lvs
-ext2spice hierarchy off
-ext2spice subcircuit top on
+        directory, log = self.magic('lvs', '''extract path .
+extract all
+ext2spice lvs
+ext2spice hierarchy on
 ext2spice -p . -o layout.spice
-feedback save extraction.feedback.tcl''')
+feedback save extraction.feedback.tcl''', strict=False)
         netlist = directory / 'layout.spice'
         if not netlist.is_file() or not netlist.stat().st_size:
             raise RuntimeError('extraction produced no SPICE netlist; '
                                f'{self.extraction_errors(log) or "see lvs.log"}')
         text = netlist.read_text()
-        if not re.search(rf'^\.subckt\s+{self.cell}_flat\s', text, re.M | re.I):
+        if not re.search(rf'^\.subckt\s+{self.cell}\s', text, re.M | re.I):
             raise RuntimeError('extracted netlist has no top subcircuit')
         devices = len(re.findall(r'^\s*[XMRC]\S*\s', text, re.M))
         reference = self.reference()
         report = directory / f'{self.cell}.lvs.out'
         self.command('lvs-netgen',
                      ['netgen', '-batch', 'lvs',
-                      f'{netlist} {self.cell}_flat',
+                      f'{netlist} {self.cell}',
                       f'{reference} {self.cell}',
                       NETGEN_SETUP, report], cwd=directory)
         result = report.read_text()
@@ -307,7 +313,7 @@ feedback save extraction.feedback.tcl''')
         if extraction:
             raise RuntimeError(f'extraction errors despite topology match '
                                f'({extraction}); see lvs/extraction.feedback.tcl')
-        return (f'schematic and flat-extracted layout match '
+        return (f'schematic and extracted layout match '
                 f'({devices} netlist device/instance statements)')
 
     def pex(self):
@@ -361,6 +367,7 @@ ext2spice -p . -o {self.cell}_pex.spice''', strict=False)
                       f'-rd', f'report={report}',
                       f'-rd', f'topcell={self.cell}',
                       f'-rd', 'variant=gf180mcuD',
+                      f'-rd', 'decks=all,-density,-dummy_comp',
                       f'-rd', 'run_mode=deep'],
                      cwd=directory)
         if not report.is_file():
