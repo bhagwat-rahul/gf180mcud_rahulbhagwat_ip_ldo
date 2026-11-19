@@ -100,10 +100,8 @@ def main():
     wire(c, 'metal3', (409.2, 215.0), (420.0, 215.0))
     c.label('metal3', 418.0, 214.6, 420.0, 215.4, 'VREF', port='VREF')
 
-    # ---- ENB: nfet gate, down then on metal3 ----
-    wire(c, 'metal1', (450.0, 201.3), (450.0, 203.0), width=0.32)
-    via(c, 450.0, 203.0, 'metal1', 'metal2')
-    wire(c, 'metal2', (450.0, 203.0), (450.0, 199.0))
+    # ---- ENB: nfet gate (poly contacted at the top), down on metal2 ----
+    wire(c, 'metal2', (450.0, 202.25), (450.0, 199.0))
     via(c, 450.0, 199.0, 'metal2', 'metal3')
     wire(c, 'metal3', (450.0, 199.0), (462.0, 199.0))
     wire(c, 'metal3', (462.0, 199.0), (462.0, 210.0))

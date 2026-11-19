@@ -126,29 +126,62 @@ def cap_array(nx, ny, pitch_x=25.0, pitch_y=15.5, name='cap_mim_array'):
 
 
 def nfet_wide():
-    """PDK nfet_03v3 W=2 L=0.5 with routing-friendly terminal metal."""
+    """nfet_03v3 W=2 L=0.5, re-ported for routing.
+
+    The PDK cell's gate contact metal sits 0.21 um from the S/D contact
+    metal (rule 0.23) and cannot be escaped at W=2.  This variant removes
+    both gate heads and the bulk bars, re-draws the gate poly as a stripe
+    extending over field with p-well notches under the extensions (so no
+    MOSCAP marker is generated), contacts the gate at the top, and brings
+    S/D out above the tap strips.  Extraction stays nfet_03v3 w=2u l=0.5u.
+    """
     c = Canvas(library_dir=str(LAYOUT))
     c.flatten('nfet_03v3_K8XTZ5', 0.0, 0.0)
-    # remove the bulk bars/links and the narrow contact-bar end-caps
+    # bulk bars and links
     c.remove_rect('metal1', -1.315, 1.635, 1.315, 1.865)
     c.remove_rect('metal1', -1.315, -1.865, 1.315, -1.635)
     for x0, x1 in ((1.085, 1.315), (-1.315, -1.085)):
         c.remove_rect('metal1', x0, 1.35, x1, 1.635)
         c.remove_rect('metal1', x0, -1.635, x1, -1.35)
+    # S/D contact end-caps
     for x0, x1 in ((0.395, 0.625), (-0.625, -0.395)):
         c.remove_rect('metal1', x0, 0.935, x1, 0.99)
         c.remove_rect('metal1', x0, -0.99, x1, -0.935)
-    for x0, x1 in ((0.185, 0.24), (-0.24, -0.185)):
+    # both gate heads: poly rails/strips, contacts and their metal pieces
+    for x0, y0, x1, y1 in ((-0.25, 1.395, 0.25, 1.46),
+                           (-0.25, 1.165, -0.185, 1.395),
+                           (0.185, 1.165, 0.25, 1.395),
+                           (-0.25, 1.0, 0.25, 1.165),
+                           (-0.25, -1.46, 0.25, -1.395),
+                           (-0.25, -1.395, -0.185, -1.165),
+                           (0.185, -1.395, 0.25, -1.165),
+                           (-0.25, -1.165, 0.25, -1.0)):
+        c.remove_rect('polysilicon', x0, y0, x1, y1)
+    c.remove_rect('polycontact', -0.185, 1.165, 0.185, 1.395)
+    c.remove_rect('polycontact', -0.185, -1.395, 0.185, -1.165)
+    for x0, x1 in ((-0.24, -0.185), (0.185, 0.24)):
         c.remove_rect('metal1', x0, 1.165, x1, 1.395)
         c.remove_rect('metal1', x0, -1.395, x1, -1.165)
-    # S/D risers flush with the contact-bar metal, then out above the taps
-    c.rect('metal1', -0.625, 0.89, -0.395, 1.60)
-    c.rect('metal1', -2.40, 1.60, -0.395, 1.83)
-    c.rect('metal1', 0.395, 0.89, 0.625, 1.60)
-    c.rect('metal1', 0.395, 1.60, 2.40, 1.83)
-    # gate landing pad over the poly contact
-    c.rect('metal1', -0.16, 1.15, 0.16, 1.45)
-    # bulk landing pad on the left tap strip
+    # p-well with notches under the poly extensions (no MOSCAP marking)
+    c.remove_rect('pwell', -1.5, -2.05, 1.5, 2.05)
+    c.rect('pwell', -1.5, -1.0, 1.5, 1.0)
+    for y0, y1 in ((-2.05, -1.0), (1.0, 2.05)):
+        c.rect('pwell', -1.5, y0, -0.45, y1)
+        c.rect('pwell', 0.45, y0, 1.5, y1)
+    # gate poly stripe, top contact and metal landing
+    c.rect('polysilicon', -0.25, -1.46, 0.25, 2.62)
+    c.rect('polycontact', -0.13, 2.12, 0.13, 2.38)
+    c.rect('metal1', -0.25, 2.04, 0.25, 2.54)
+    c.rect('via1', -0.13, 2.12, 0.13, 2.38)
+    c.rect('metal2', -0.25, 2.05, 0.25, 2.55)
+    # S/D fan-out
+    for sign in (1, -1):
+        xs = lambda a: sign * a
+        x0, x1 = sorted((xs(0.395), xs(0.625)))
+        c.rect('metal1', x0, 0.89, x1, 1.60)
+        x0, x1 = sorted((xs(0.395), xs(2.40)))
+        c.rect('metal1', x0, 1.60, x1, 1.83)
+    # bulk landing pad on the left tap contact
     c.rect('metal1', -1.60, -1.30, -0.90, -0.90)
     c.write(str(LAYOUT / 'nfet_03v3_w2_l05_wide.mag'))
     print('wrote layout/nfet_03v3_w2_l05_wide.mag')
