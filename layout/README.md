@@ -138,3 +138,47 @@ The install is container-local — re-run after recreating the container:
 Without these, `run_gen_wrapper_gds.sh` fails with "Failed on cell
 gf180mcu_as_sc_mcu7t3v3__tap_2" and leaves 0-byte GDS files.
 
+## Verification loop — `scripts/run_checks.py`
+
+One checker drives the whole layout feedback loop (modeled on the
+Chipalooza2 PLL `run_checks.py`).  Run it inside IIC-OSIC-TOOLS from the
+repository root:
+
+    python3 scripts/run_checks.py quick ldo_load      # hierarchy + DRC + LVS
+    python3 scripts/run_checks.py all                 # all blocks, everything
+    python3 scripts/run_checks.py lvs ldo_power_stage
+    python3 scripts/run_checks.py antenna|pex|klayout-drc|gds [CELL ...]
+
+| check | meaning |
+| --- | --- |
+| `input-hierarchy` | every `.mag` complete, gf180mcuD tech, children resolvable |
+| `drc-magic` | Magic `drc(full)` tile counts — diagnostic only (see below) |
+| `drc-klayout` | foundry KLayout deck, zero-marker gate |
+| `lvs-netgen` | flatten → extract → netgen vs the multi-sheet xschem netlist; `Circuits match uniquely.` gate |
+| `antenna-magic` | extract + `antennacheck`, zero-marker gate |
+| `pex-magic` | `extresist` RC extraction to `<cell>_pex.spice` |
+| `gds-export` | `gds write` sanity |
+
+The default cell list is every block and then `ldo_top`, so block LVS runs
+before the whole-design LVS and a failure points at one block.  Sources are
+snapshotted into `checks/<cell>/<timestamp>/` first; nothing writes into
+`layout/` or `schematics/` (and `checks/` is gitignored).
+
+Notes:
+- The layout side is flattened before extraction because the imported
+  device cells carry no terminal labels; flattening is what recovers
+  terminal connectivity from them.  Labelled device cells could drop the
+  flatten step later.
+- Magic's own DRC is not a clean gate on this baseline: `drc(full)` tiles
+  PDK device cells and the import packs devices in touching rows, so
+  boundary contact/diff enclosure markers dominate.  The KLayout deck (the
+  foundry runset) is the DRC gate; its `.lyrdb` names the rules.
+- Top-level LVS/PEX flatten the whole design including the 20.5 mm MPASS
+  stack; expect those two checks to take minutes and real memory.
+- Baseline status (2026-11-20): the device-placement baseline is red by
+  design — no routing exists and every port label is stacked at the
+  origin, so extraction reports shorted ports (e.g. `VOUT`/`STBY`) and
+  netgen reports a topology mismatch.  A block goes green when it is
+  floored, routed, and labelled.
+
+

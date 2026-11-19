@@ -43,12 +43,18 @@ Notes:
   device cells carry no terminal labels; this is the only reliable way to
   recover terminal connectivity from those cells.  A real, routed cell
   library with labelled device terminals can drop the flatten step later.
+- On the device-placement baseline (no routing yet) DRC and LVS are
+  expected to be red: the import packs devices in touching rows (contact/
+  diff enclosure markers at cell boundaries) and stacks every port label
+  at the origin (shorted-port warnings).  A green block means it has been
+  floored and routed.
 - LVS is a gate: netgen must report "Circuits match uniquely." with no
   property errors.  PEX is a gate on extraction completing and producing a
   top subcircuit; it is not a simulation signoff.
 """
 
 import argparse
+from collections import Counter
 from datetime import datetime
 import json
 import os
@@ -144,21 +150,25 @@ quit -noprompt
         return directory, log
 
     def extraction_errors(self, log):
-        """Summarize Magic extraction feedback (flat extraction of imported
-        device cells reports diff overlaps and shorted ports)."""
+        """Summarize Magic extraction feedback: error counts per cell and
+        electrically shorted ports (the imported device cells carry no
+        terminal labels, and the baseline stacks its port labels at the
+        origin, so both appear until a real layout exists)."""
         counts = re.findall(r'^(\S+): (\d+) errors$', log, re.M)
         total = sum(int(n) for _, n in counts)
-        if not total:
-            return None
-        first = []
+        shorts = []
         for line in log.splitlines():
-            m = re.search(r'(?:Warning:\s+)?(Ports .+ electrically shorted\.?)', line)
-            if m and m.group(1) not in first:
-                first.append(m.group(1))
-        detail = f'{total} extraction errors'
-        if first:
-            detail += '; first: ' + ' | '.join(first[:3])
-        return detail
+            match = re.search(r'(Ports .+? electrically shorted\.?)', line)
+            if match and match[1] not in shorts:
+                shorts.append(match[1])
+        if not total and not shorts:
+            return None
+        parts = []
+        if total:
+            parts.append(f'{total} extraction errors')
+        if shorts:
+            parts.append('; '.join(shorts[:3]))
+        return '; '.join(parts)
 
     # -- checks -----------------------------------------------------------
 
@@ -227,8 +237,10 @@ puts "DRC_LISTALL: [drc listall count]"''')
             return '0 Magic DRC error tiles'
         total = sum(n for _, n in counts)
         worst = sorted(counts, key=lambda item: -item[1])[:3]
-        return (f'{total} Magic DRC error tiles (informational; gencell '
-                f'false positives; worst: '
+        return (f'{total} Magic DRC error tiles (informational; the '
+                f'device-placement baseline abuts devices, so boundary '
+                f'enclosure markers dominate; KLayout deck is the gate; '
+                f'worst: '
                 + ', '.join(f'{cell} {n}' for cell, n in worst) + ')')
 
     def extraction(self, name, extra=''):
@@ -281,13 +293,14 @@ feedback save extraction.feedback.tcl''')
         result = report.read_text()
         if 'Final result: Circuits match uniquely.' not in result:
             summary = [line.strip() for line in result.splitlines()
-                       if re.search(r'(?i)circuit|device| net |property|mismatch|match',
-                                    line)][-6:]
+                       if re.match(r'(?i)(final result:|number of (devices|nets):|'
+                                   r'netlists do not match)', line.strip())]
+            summary = list(dict.fromkeys(summary))[:5]
             detail = self.extraction_errors(log)
+            message = f'Netgen: {" | ".join(summary)}'
             if detail:
-                raise RuntimeError(f'{detail}; Netgen: {" | ".join(summary)}')
-            raise RuntimeError(f'Netgen topology/property mismatch; '
-                               f'see {report}; {" | ".join(summary)}')
+                message = f'{detail}; {message}'
+            raise RuntimeError(f'{message}; see {report}')
         if re.search(r'property errors', result, re.I):
             raise RuntimeError(f'Netgen property mismatch; see {report}')
         extraction = self.extraction_errors(log)
@@ -352,9 +365,13 @@ ext2spice -p . -o {self.cell}_pex.spice''', strict=False)
                      cwd=directory)
         if not report.is_file():
             raise RuntimeError(f'KLayout DRC wrote no report; see {directory}')
-        count = len(ET.parse(report).findall('.//items/item'))
-        if count:
-            raise RuntimeError(f'{count} KLayout DRC markers; see {report}')
+        items = ET.parse(report).findall('.//items/item')
+        if items:
+            counts = Counter(item.findtext('category', '?').strip("'")
+                             for item in items)
+            top = ', '.join(f'{name} {n}' for name, n in counts.most_common(3))
+            raise RuntimeError(f'{len(items)} KLayout DRC markers '
+                               f'(top: {top}); see {report}')
         return f'0 KLayout DRC markers (full deck; GDS: {self._gds_note})'
 
     def export(self):
@@ -421,8 +438,9 @@ def main():
         if mode_for_cell in ('all', 'quick', 'lvs'):
             checks.run('source-reference', lambda: str(checks.reference()))
         if mode_for_cell in ('all', 'quick', 'drc'):
-            # This tech's magic DRC flags tiles inside the PDK device cells
-            # themselves, so keep it as a diagnostic; KLayout is the gate.
+            # Magic DRC also tiles the device-placement baseline heavily at
+            # abutting cell boundaries; keep it as a diagnostic and let the
+            # foundry KLayout deck be the gate.
             checks.run('drc-magic', checks.drc, required=False)
         if mode_for_cell in ('all', 'drc', 'klayout-drc'):
             checks.run('drc-klayout', checks.klayout_drc)
