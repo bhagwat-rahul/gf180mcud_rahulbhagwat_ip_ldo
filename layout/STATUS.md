@@ -77,6 +77,17 @@ tied to their sources on metal1.
 
 Measured block bbox 1267.4 x 404.2 um (97% of the slot).
 
+## ldo_top -- measured assembly (does not fit)
+`layout/ldo_top.mag` (7 blocks, shelf-packed at 1274 um width, no
+inter-block routing yet).  Measured GDS bbox **1267.80 x 954.41 um =
+1.21M um^2**, i.e. **2.30x the 525.9k um^2 slot**.  Per-block measured
+bboxes are in the placement print (startup 1267x449, load 462x353,
+softstart 438x211, error_amp 327x188, power 424x107, pgood 1006x32,
+bias 65x15).  The chip cannot fit the assigned slot at the certified
+capacitance values; a design decision is required (reduce capacitance
+and re-certify, enlarge the slot to ~1.2M um^2, or use a denser MIM).
+
 ## Remaining
-- ldo_top assembly + assembled bbox measurement.
+- Area decision (blocking tapeout): reduce caps / bigger slot / denser MIM.
+- Inter-block routing inside ldo_top and the full-chip checker gate.
 - bulk=VSS PVT re-certification.
