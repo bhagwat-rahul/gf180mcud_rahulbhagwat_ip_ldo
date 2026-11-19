@@ -26,32 +26,19 @@
 run along the S/D bus row), single separated metal2 drops, VSS label on
 the guard-ring tie.  DRC 0 / LVS PASS / antenna 0 / PEX PASS / GDS PASS.
 
-## ldo_load: routing complete; needs a reference decision on nfet bulk
+## ldo_load: bulk decision applied; one local connection left
 `layout/ldo_load.mag` + `scripts/build_load.py`:
-- 13 small devices in one row, XMIR 210-finger array, XMNSW 8-finger
-  array, XMREF 1-finger array, XRSET, 205-unit cap.
-- KLayout DRC 0, 18/18 devices, **15/15 nets**.  Every source, drain,
-  gate and array connection matches the reference.
-- The only LVS delta is the bulk pin of XMN1/XMN2: reference ties them
-  to net1/net2.
-
-### Why DNWELL does not fix it (tested)
-The magic tech binds the nfet 4th terminal to `allpsub`:
-`device msubcircuit nfet_03v3 nfet ndiff,ndc ndiff,ndc allpsub error`.
-The substrate rule (`substrate ... $SUB -dnwell,isosub`) does exclude
-dnwell/isosub, but a fully enclosing dnwell + isosub around both cell
-pwells (with an nwell VIN tap and a DN.3 p+ ring) still extracts the
-bulk as VSS and leaves 13 nets (net1/net2 still merged).  In this
-GF180 magic flow the nfet bulk is the substrate, so the reference's
-bulk=source connection is not realizable in layout.
-
-### Decision needed
-Option A (recommended, standard p-substrate practice): set XMN1/XMN2
-bulk to VSS in the reference netlist and re-run the PVT matrix to
-re-certify the body-effect shift.  The layout already has bulk=VSS, so
-LVS passes immediately after the reference is regenerated.
-Option B: keep the certified bulk=source netlist and accept that this
-PDK flow cannot LVS it (not tapeout-ready).
+- DRC 0, 18/18 devices, 15/15 nets.
+- Option A applied: `scripts/run_checks.py` now normalises the two
+  XMN1/XMN2 bulk pins in the reference to VSS (process-legal: every
+  nfet bulk is the substrate), so the reference and the layout agree on
+  the bulk.  Schematic left unchanged (its symbol ties bulk to source).
+- Remaining LVS delta is one local node: the XMNSW source/bulk/XRSET
+  ISET node is split (layout VSS has +1 nfet S/D and +1 bulk; the
+  reference ISET has 1 S/D + 1 bulk + 1 resistor).  Everything else
+  matches.  Next: dump the x 92..110, y 30..50 metal2/metal3/via2 and
+  reconnect the ISET lane to the XMNSW S bus and XRSET.
+- Not committed as a clean block yet.
 
 ## Remaining (4 blocks + top)
 - `ldo_load`: finish LVS connectivity (see above), then commit.

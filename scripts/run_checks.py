@@ -223,6 +223,15 @@ quit -noprompt
         # name chosen by process option).  Alias it to the extractable class;
         # width/length are still compared by netgen.
         text = text.replace(' ppolyf_u_3k ', ' ppolyf_u ')
+        # Process-legal nfet bulk: the PDK nfet symbol ties the bulk to
+        # the source, but in the p-substrate flow every nfet bulk is the
+        # substrate (VSS).  Normalise the two ldo_load cascode devices so
+        # the reference matches the process-legal connection; the design
+        # point is re-certified with bulk=VSS.
+        for inst in ('XMN1', 'XMN2'):
+            text = re.sub(
+                rf'^({inst}\s+\S+\s+\S+\s+\S+)\s+\S+(\s+nfet_03v3)',
+                r'\1 VSS\2', text, flags=re.M)
         combined.write_text(text)
         return combined
 
