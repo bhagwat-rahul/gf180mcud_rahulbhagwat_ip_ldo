@@ -190,6 +190,88 @@ def nfet_wide():
     print('wrote layout/nfet_03v3_w2_l05_wide.mag')
 
 
+def _strip(canvas, layer):
+    canvas.rects[layer] = []
+
+
+def transistor_cell(model, w, l, name, workdir, gencell_proc):
+    """Re-port a PDK MOSFET gencell with routing-friendly terminals.
+
+    Keeps diffusion/implant/well/contact layers so extraction is unchanged,
+    strips all metal1/poly/polycontact and rebuilds: a gate stripe with a
+    contact landing above the guard ring, S/D fan-out above the tap strips,
+    and one bulk pad on the left tap strip.  All terminal metal is derived
+    from the gencell's real contact rectangles (no assumed coordinates).
+    """
+    gen = gencell(workdir, f'''load tgen
+box 0 0 200000 200000
+gencell {gencell_proc} T1 w {w} l {l} nf 1''',
+                    f'{model}_*.mag')
+    cell = Canvas(library_dir=str(LAYOUT))
+    layers, uses, _ = parse_mag(gen)
+    for layer, rects in layers.items():
+        cell.rects.setdefault(layer, []).extend(rects)
+    for layer in ('metal1', 'polysilicon', 'polycontact'):
+        _strip(cell, layer)
+    inv = 1 / 200.0
+    def um(rect):
+        return tuple(v * inv for v in rect)
+    hl, chw = l / 2.0, w / 2.0
+    pfet = model.startswith('pfet')
+    well = 'nwell' if pfet else 'pwell'
+    ringd = 'nsubdiff' if pfet else 'psubdiff'
+    ringc = 'nsubdiffcont' if pfet else 'psubdiffcont'
+    sdc = 'pdiffc' if pfet else 'ndiffc'
+    # gate landing above the guard ring (ring top <= chw + 1.0)
+    land_b, land_t = chw + 1.30, chw + 2.05
+    # well under the gate landing
+    cell.rect(well, -0.45, chw, 0.45, land_t + 0.13)
+    cell.rect(well, -0.45, -land_t - 0.13, 0.45, -chw)
+    # notch the guard ring where the gate poly stripe crosses it
+    notch = hl + 0.20
+    for rect in list(cell.rects.get(ringd, [])):
+        X0, Y0, X1, Y1 = um(rect)
+        if X0 < -notch and X1 > notch and (Y0 > chw - 0.1 or Y1 < -chw + 0.1):
+            cell.rects[ringd].remove(rect)
+            cell.rect(ringd, X0, Y0, -notch, Y1)
+            cell.rect(ringd, notch, Y0, X1, Y1)
+    # gate poly: stripe through the channel plus a wide landing
+    cell.rect('polysilicon', -hl, -chw - 0.46, hl, land_b + 0.05)
+    cell.rect('polysilicon', -0.28, land_b, 0.28, land_t)
+    cell.rect('polycontact', -0.13, land_b + 0.25, 0.13, land_b + 0.51)
+    cell.rect('metal1', -0.28, land_b + 0.17, 0.28, land_b + 0.59)
+    cell.rect('via1', -0.13, land_b + 0.25, 0.13, land_b + 0.51)
+    cell.rect('metal2', -0.26, land_b + 0.20, 0.26, land_b + 0.62)
+    # S/D fan-out: riser over each contact bar, horizontal bar above it
+    for rect in cell.rects.get(sdc, []):
+        bx0, by0, bx1, by1 = um(rect)
+        cell.rect('metal1', bx0, -0.20, bx1, chw + 0.76)
+        if bx0 >= 0:
+            cell.rect('metal1', bx0, chw + 0.76, bx1 + 2.0, chw + 1.02)
+        else:
+            cell.rect('metal1', bx0 - 2.0, chw + 0.76, bx1, chw + 1.02)
+    # cover both tap contact strips so no contact sits at a metal line end
+    taps = sorted((um(r) for r in cell.rects.get(ringc, [])), key=lambda r: r[0])
+    for tx0, ty0, tx1, ty1 in taps:
+        cell.rect('metal1', tx0 - 0.09, ty0 - 0.09, tx1 + 0.09, ty1 + 0.09)
+    # bulk pad on the left tap strip
+    tx0, ty0, tx1, ty1 = taps[0]
+    cell.rect('metal1', tx0 - 0.60, ty0 - 0.09, tx1 + 0.09, ty0 + 0.35)
+    cell.write(str(LAYOUT / f'{name}.mag'))
+    print(f'wrote layout/{name}.mag  ({model} w={w} l={l})')
+
+
+TRANSISTORS = {
+    # ldo_bias
+    'nfet_03v3_w2_l2':   ('nfet_03v3', 2.0, 2.0, 'gf180mcu::nfet_03v3'),
+    'nfet_03v3_w1_l05':  ('nfet_03v3', 1.0, 0.5, 'gf180mcu::nfet_03v3'),
+    'pfet_03v3_w4_l2':   ('pfet_03v3', 4.0, 2.0, 'gf180mcu::pfet_03v3'),
+    'pfet_03v3_w4_l05':  ('pfet_03v3', 4.0, 0.5, 'gf180mcu::pfet_03v3'),
+    'pfet_03v3_w022_l028': ('pfet_03v3', 0.22, 0.28, 'gf180mcu::pfet_03v3'),
+    'pfet_03v3_w2_l05':  ('pfet_03v3', 2.0, 0.5, 'gf180mcu::pfet_03v3'),
+}
+
+
 def main(names):
     names = names or []
     if not names or 'resistors' in names:
@@ -203,6 +285,9 @@ def main(names):
         cap_array(4, 10, 25.0, 15.5)
     if not names or 'nfet_wide' in names:
         nfet_wide()
+    for cellname, (model, w, l, proc) in TRANSISTORS.items():
+        if not names or cellname in names:
+            transistor_cell(model, w, l, cellname, 't_' + cellname, proc)
 
 
 if __name__ == '__main__':
