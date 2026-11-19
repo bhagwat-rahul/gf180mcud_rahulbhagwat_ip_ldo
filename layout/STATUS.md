@@ -66,3 +66,28 @@ alone is 342k um2 = 65% of the slot.
 cap_80 (80 x 50x50 MIM, 16x5), cap_205/62/40/10/4 (20x12.2 arrays),
 amp_p50_l028_n10/n4 (pass switches), amp_n10_l05, ppolyf_u_rbld
 (10/57.143).  All KLayout-clean; cap_80 extracts 80 caps.
+
+## ldo_startup wiring plan (next session, coordinates)
+Placement (committed d2ee1c4, DRC 0, 1267.4 x 404.2):
+- caps: cap_80 (0,80) T(-23,328.5) B(27,51.5); cap_62 (0,-40)
+  T(-6,17) B(-6,-50.5); cap_40 (450,-40) T(444,32.5) B(444,-50.5);
+  cap_205 (880,80) T(874,292) B(874,69.5).  All metal5 -> down_to
+  metal3.
+- resistors rot90: RSWGC (880/1137.86,300), RSWGCC (...,306),
+  RBLEDPD2 (...,312); RBLEDPD1 must move to (1200,360) vertical
+  pads (1200,388.4)/(1200,331.6) to free the long verticals.
+  RBLD at (861,300) pads (861,328.85)/(861,271.15) -- move to
+  horizontal (1071..1129,340) to avoid the cap_205 body and the
+  SWGCC vertical at x=874.
+- switches: MPCC (1150,325) G(1149.45,350.87) S(1149.68,296.65)
+  D(1157.96,295.45) B(1148.55,325); MPCG (1165,325)
+  G(1164.45,350.87) S(1164.68,296.65) D(1167.44,295.45) B(1163.55,325);
+  MNBLD (1180,325) G(1179.45,330.87) S(1179.68,316.65) D(1180.82,315.45)
+  B(1178.55,325).
+Lanes (metal3): CCF y=40, CGFF y=-45, VIN y=-56, SWGC y=365,
+SWGCC y=372, BLED y=345; verticals x=1120 (CCF), 1130 (CGFF),
+1172 (VSS), 1164 (SWGC), 1149 (SWGCC).  Ports COMP2 (-23,335),
+GATE (444,44), ENB (1138,303), VIN, VSS, VOUT, PGOOD (1200,60).
+Known collision to solve: RBLD/VOUT horizontal at y=296.65 vs the
+SWGCC cap vertical at x=874 -- move RBLD right of x~1140 or route
+VOUT at y=285 from the left end of the S buses.
