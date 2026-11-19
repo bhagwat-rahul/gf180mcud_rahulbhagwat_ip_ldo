@@ -47,19 +47,18 @@ MIM arrays.  DRC 0, LVS PASS (57 statements), antenna 0, PEX PASS,
 GDS PASS.  All device bulks are VIN/VSS (process-legal; no isolation
 needed in this block).
 
-## Remaining (4 blocks + top)
-- `ldo_load`: finish LVS connectivity (see above), then commit.
-- `ldo_error_amp` (20 devices; needs new sizes p50/0.5, p50/2, n16/2,
-  p40/0.5, p20/0.5, n40/0.5, n32/2, p40/1, n40/1, R 222.66/1, caps
-  10+20 units).  Single-row track router applies.
-- `ldo_startup` (12 devices; 80 x 50x50 cap units + 205/62/40-unit
-  20x12.2 arrays + 996/257/64/57 um resistors).  Needs a 50x50-unit MIM
-  array generator; the 20x12.2 `cap_array` is reusable.
-- `ldo_top` (99 instances) and full-chip slot assembly.
+## Slot-fit analysis (blocking)
+Reference MIM plate area: softstart 9.8k + load 50.0k + error_amp
+7.3k + startup 274.9k = **342,008 um^2**.  Even at 85% array fill
+that is 402k of the 525.8k slot (76%), before any transistors,
+resistors or routing.  Sum of the six existing block bounding boxes is
+already ~822k um^2 (load alone 745x300, startup caps 880x280+375x220).
+The full chip therefore does **not** fit the assigned slot at the
+certified capacitance values with the current block floorplans; a
+design decision is required (reduce capacitance with re-certification,
+increase the slot, or use a denser MIM option).
 
-## Area budget warning
-Reference MIM plate area: softstart 9.8k, load 50k, startup 275k um^2
-(= 335k total).  At the current 63% array fill that is ~530k um^2, i.e.
-already the whole 525.8k um^2 slot before FETs and routing.  The cap
-arrays must be repacked to >=85% fill (tighter pitch, 50x50 unit arrays
-for the startup caps) or the slot cannot hold the design.
+## ldo_startup device cells (ready, block not built)
+cap_80 (80 x 50x50 MIM, 16x5), cap_205/62/40/10/4 (20x12.2 arrays),
+amp_p50_l028_n10/n4 (pass switches), amp_n10_l05, ppolyf_u_rbld
+(10/57.143).  All KLayout-clean; cap_80 extracts 80 caps.
