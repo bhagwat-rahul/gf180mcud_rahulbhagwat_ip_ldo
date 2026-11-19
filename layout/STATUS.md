@@ -26,24 +26,32 @@
 run along the S/D bus row), single separated metal2 drops, VSS label on
 the guard-ring tie.  DRC 0 / LVS PASS / antenna 0 / PEX PASS / GDS PASS.
 
-## ldo_load: routing complete, blocked on isolated pwells
+## ldo_load: routing complete; needs a reference decision on nfet bulk
 `layout/ldo_load.mag` + `scripts/build_load.py`:
-- 13 small devices in one row (metal3 tracks y=8..17), XMIR 210-finger
-  array, XMNSW 8-finger array, XMREF 1-finger array, XRSET, 205-unit cap.
-- **KLayout DRC 0, 18/18 devices, 15/15 nets.**  Every source, drain,
-  gate and array connection now matches the reference.  The only
-  remaining LVS difference is the bulk pin of XMN1 and XMN2: the
-  reference ties them to net1/net2, but in this p-substrate flow every
-  nfet pwell is the global substrate, so the bulk pad is VSS.  Tying the
-  pad to net1/net2 (the original routing) shorted those nets to VSS;
-  tying it to VSS (current diagnostic build) leaves two bulk-pin
-  mismatches.
-- Fix: give XMN1 and XMN2 **deep-n-well isolated pwells** (dnwell under
-  each cell, dnwell n-tap to VIN, p-tap to net1/net2) so their bulks can
-  follow the sources.  Alternative: change those two bulks to VSS in the
-  schematic and re-certify the body-effect shift.  Recommend dnwell to
-  preserve the certified netlist.
-- The block must not be committed as "clean" until this is resolved.
+- 13 small devices in one row, XMIR 210-finger array, XMNSW 8-finger
+  array, XMREF 1-finger array, XRSET, 205-unit cap.
+- KLayout DRC 0, 18/18 devices, **15/15 nets**.  Every source, drain,
+  gate and array connection matches the reference.
+- The only LVS delta is the bulk pin of XMN1/XMN2: reference ties them
+  to net1/net2.
+
+### Why DNWELL does not fix it (tested)
+The magic tech binds the nfet 4th terminal to `allpsub`:
+`device msubcircuit nfet_03v3 nfet ndiff,ndc ndiff,ndc allpsub error`.
+The substrate rule (`substrate ... $SUB -dnwell,isosub`) does exclude
+dnwell/isosub, but a fully enclosing dnwell + isosub around both cell
+pwells (with an nwell VIN tap and a DN.3 p+ ring) still extracts the
+bulk as VSS and leaves 13 nets (net1/net2 still merged).  In this
+GF180 magic flow the nfet bulk is the substrate, so the reference's
+bulk=source connection is not realizable in layout.
+
+### Decision needed
+Option A (recommended, standard p-substrate practice): set XMN1/XMN2
+bulk to VSS in the reference netlist and re-run the PVT matrix to
+re-certify the body-effect shift.  The layout already has bulk=VSS, so
+LVS passes immediately after the reference is regenerated.
+Option B: keep the certified bulk=source netlist and accept that this
+PDK flow cannot LVS it (not tapeout-ready).
 
 ## Remaining (4 blocks + top)
 - `ldo_load`: finish LVS connectivity (see above), then commit.
