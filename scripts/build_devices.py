@@ -162,12 +162,15 @@ def nfet_wide():
     for x0, x1 in ((-0.24, -0.185), (0.185, 0.24)):
         c.remove_rect('metal1', x0, 1.165, x1, 1.395)
         c.remove_rect('metal1', x0, -1.395, x1, -1.165)
-    # p-well with notches under the poly extensions (no MOSCAP marking)
-    c.remove_rect('pwell', -1.5, -2.05, 1.5, 2.05)
-    c.rect('pwell', -1.5, -1.0, 1.5, 1.0)
-    for y0, y1 in ((-2.05, -1.0), (1.0, 2.05)):
-        c.rect('pwell', -1.5, y0, -0.45, y1)
-        c.rect('pwell', 0.45, y0, 1.5, y1)
+    # keep the poly landing inside the p-well (extend the well under both
+    # gate poly extensions) and notch the p-substrate ring where the poly
+    # crosses it, so no substrate MOS capacitor is formed there
+    c.rect('pwell', -0.45, 1.0, 0.45, 2.75)
+    c.rect('pwell', -0.45, -2.75, 0.45, -1.0)
+    for y0, y1 in ((1.57, 1.93), (-1.93, -1.57)):
+        c.remove_rect('psubdiff', -1.38, y0, 1.38, y1)
+        c.rect('psubdiff', -1.38, y0, -0.45, y1)
+        c.rect('psubdiff', 0.45, y0, 1.38, y1)
     # gate poly stripe, top contact and metal landing
     c.rect('polysilicon', -0.25, -1.46, 0.25, 2.62)
     c.rect('polycontact', -0.13, 2.12, 0.13, 2.38)
