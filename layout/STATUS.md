@@ -6,6 +6,7 @@
 | ldo_softstart | 2060d57 | 40-unit MIM array + RSS + reset nfet |
 | ldo_bias | 16e6e2d | 8 small transistors |
 | ldo_pgood | e7423ea | 12 transistors + 3 long poly resistors |
+| ldo_power_stage | (this commit) | 400-finger pass array + 3 devices |
 
 ## Device library (committed dcbcf7a)
 - `transistor_cell()`: re-ported single MOSFETs, KLayout-clean and
@@ -21,16 +22,11 @@
 - Resistor cells: all 12 ppolyf_u_3k values + 20 um-wide ppolyf_u.
 
 ## In progress
-`ldo_power_stage` (`layout/ldo_power_stage.mag`, uncommitted):
-- 400-finger pass array, W40/L0.5 pull-up, W20/L0.5 discharge fet,
-  W20/L28.229 discharge resistor.
-- KLayout DRC: **0 markers**.
-- LVS: the pass array's source bus and drain bus extract as one node
-  (every finger shows S=D=VOUT); the block-level VIN/VOUT short is not
-  yet located.  No other net errors.
+(none) -- `ldo_power_stage` completed: end-tapped metal3 buses (no long
+run along the S/D bus row), single separated metal2 drops, VSS label on
+the guard-ring tie.  DRC 0 / LVS PASS / antenna 0 / PEX PASS / GDS PASS.
 
 ## Remaining
-- Fix the power-stage S/D short, then commit.
 - `ldo_load` (18 devices; 210-finger array, 205-unit cap, 2D small-device
   grid needs per-row routing channels), `ldo_error_amp` (20 devices),
   `ldo_startup` (12 devices, 80 x 50x50 + 205/62/40-unit cap arrays),
