@@ -1,41 +1,41 @@
 # Known DRC exceptions (block-level KLayout runs)
 
-Two classes of KLayout DRC markers come from **PDK-supplied device cells**,
-not from our routing.  They are recorded here so a block check can be
-judged on its own geometry; they must be resolved before tapeout (see
+Two classes of KLayout DRC markers come from **device-cell geometry**, not
+from block routing.  They are recorded here so a block check can be judged
+on its own routing; they must be resolved before tapeout (see
 "Resolution plan").
 
-## 1. MIM cap gencell vs MIMTM.1
+## 1. MIM cap array -- RESOLVED
 
-The PDK's `cap_mim_2p0fF` gencell (used for every MIM cap in the design)
-violates **MIMTM.1** ("MiM bottom plate spacing to bottom plate metal,
-1.2 µm") all by itself: 78 markers on a single 40-unit stack
-(`layout/cap_mim_2p0fF_UFNFZK.mag`).  The stack pitch leaves 1.14 µm
-between the metal4 bottom plate of one unit and the virtual bottom plate
-(top plate +1.06 µm) of the next, i.e. 0.06 µm short.
+The PDK `cap_mim_2p0fF` gencell violates **MIMTM.1** in its 40-unit stack
+(78 markers on the cell alone; unit pitch 14 um leaves 1.14 um instead of
+the required 1.2 um to the next virtual top plate).
 
-Evidence: running the foundry deck on the cap cell alone gives
-`{'MIMTM.1': 78}`; on the nfet cell alone `{'M1.3': 2, ...}`.
+`scripts/build_devices.py` now generates `layout/cap_mim_array.mag`:
+4 x 10 unit caps at 25.0 x 15.5 um pitch, top plates strapped on metal5
+through the mimcapcontact regions, bottom plates through the cells' via4
+edge bars, buses on opposite sides so the two metal5 networks never cross.
+The array is **KLayout DRC clean** and extraction gives 40 parallel caps
+(`c_width=20u c_length=12.2u`) between the BOT and TOP ports.
 
-**Resolution plan:** draw a custom MIM array (same electrical stack:
-mimcap / mimcapcontact / metal4 / via4 / metal5) with a pitch that leaves
->= 1.2 µm between unit caps, then re-run LVS/DRC.  The cap cell is a leaf
-cell, so this does not change the netlist.
+## 2. nfet_03v3_w2_l05_wide -- 3 markers, device-internal
 
-## 2. nfet/pfet gencell contact-bar metal
+`layout/nfet_03v3_w2_l05_wide.mag` is the PDK `nfet_03v3` W=2 L=0.5 cell
+with routing-friendly terminal metal (S/D risers, gate pad, bulk pad; the
+bulk bars and contact-bar end-caps are removed).  Extraction parameters
+are unchanged (`w=2u l=0.5u`).
 
-The PDK MOSFET gencells draw narrow metal1 end-caps on their contact bars
-(0.23 x 0.055 um).  In isolation they violate **M1.1** (min metal1 width
-0.23) and **M1.3** (min metal1 area).  In a block they additionally sit
-0.20-0.22 um from neighbouring pads (M1.2a 0.23) because the cell is only
-2.4 um wide while its drain/source/gate need three escaping rails.
+Remaining markers, all inside the cell:
 
-Current handling in `scripts/build_softstart.py`: the redundant end-caps
-are removed after flattening (the contact bars remain, and the block's own
-metal pads cover them), which removes the PDK-inherent M1.1/M1.3 markers.
+* **M1.2a x2** -- the PDK contact enclosures leave only **0.21 um**
+  between the S/D contact metal and the gate contact metal (rule: 0.23).
+  The channel is 1.02 um wide and three 0.28 um escapes plus spacing need
+  1.40 um, so no escape geometry at this width can satisfy it.
+* **M1.3 x1** -- the bottom gate contact's metal island is 0.37 x 0.23 um
+  (0.085 um^2, minimum 0.09).  Removing the contact makes magic's
+  poly/polycontact extraction produce PL.* errors, so it stays.
 
-**Resolution plan:** for blocks where the escapes still crowd the cell
-(e.g. ldo_softstart's MNRESET), draw a wider transistor cell at the same
-W/L (extra source/drain/gate landing pads) or use a mirrored/rotated
-placement with more channel.  Only the geometry changes; extraction and
-LVS parameters stay identical.
+**Resolution plan:** draw the nfet from primitives (pwell, ndiff, poly,
+contacts, metal1) as a custom cell with the gate contact moved >= 0.23 um
+from the S/D bars (e.g. staggered landing pads above the tap strips).
+W/L and the extracted model stay `nfet_03v3 w=2u l=0.5u`.
