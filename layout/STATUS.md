@@ -47,28 +47,20 @@ MIM arrays.  DRC 0, LVS PASS (57 statements), antenna 0, PEX PASS,
 GDS PASS.  All device bulks are VIN/VSS (process-legal; no isolation
 needed in this block).
 
-## Slot-fit analysis (MEASURED, blocking)
-Real bounding boxes of the committed blocks (from their .mag geometry):
+## Slot-fit analysis (MEASURED)
+ldo_startup **placement** (all cells, not yet wired): real bbox
+**1267.40 x 404.20 um = 512.3k um2**, KLayout DRC 0.  It fits inside
+1274.27 x 412.71 by itself, using 97% of the slot.
 
-| block | bbox (um) | area |
-|---|---|---|
-| ldo_softstart | 438.6 x 211.6 | 92.8k |
-| ldo_bias | 65.2 x 14.8 | 1.0k |
-| ldo_pgood | 1006.1 x 31.6 | 31.8k |
-| ldo_power_stage | 423.9 x 107.4 | 45.5k |
-| ldo_load | 462.5 x 353.3 | 163.4k |
-| ldo_error_amp | 327.4 x 188.2 | 61.6k |
-| **sum** | | **396.1k** |
+The six other committed blocks measure 396.1k um2 (sum of their real
+bounding boxes).  Startup alone + the others = 908k um2 = 1.73x the
+525.9k slot, so the full chip cannot be assembled into this slot even
+though each block individually fits.
 
-Slot = 525.9k um^2.  ldo_startup's four cap arrays alone have
-bounding boxes 876x280 (80x50x50), 375x226 (205 units), 391x86
-(62 units), 203x86 (40 units); even a perfectly packed startup block
-is >= 420k um^2.  Measured/packed total >= 816k um^2 = 1.55x the slot.
-
-The reference MIM plate area alone is 342,008 um^2 = 65% of the slot
-before any FET, resistor or routing.  The chip cannot fit the assigned
-slot at the certified capacitance values.  Required: reduce the
-capacitance by ~45% with re-certification, or a slot of ~820k um^2.
+This is now a measurement, not an estimate.  The startup block alone
+consumes 97% of the slot because the four MIM arrays (80x50x50, 205,
+62 and 40 units) have 380k um2 of bounding box.  The MIM plate area
+alone is 342k um2 = 65% of the slot.
 
 ## ldo_startup device cells (ready, block not built)
 cap_80 (80 x 50x50 MIM, 16x5), cap_205/62/40/10/4 (20x12.2 arrays),
